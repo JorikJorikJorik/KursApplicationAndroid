@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/work_list_item"
+            android:title="@string/work_list"
+            android:checked="false"
+            android:visible="false"/>
+        <item
+            android:id="@+id/bus_list_item"
+            android:title="@string/bus_list"
+            android:checked="false"
+            android:visible="false"/>
+        <item
+            android:id="@+id/driver_list_item"
+            android:title="@string/driver_list"
+            android:checked="false"
+            android:visible="false"/>
+        <item
+            android:id="@+id/repair_list_item"
+            android:title="@string/repair_list"
+            android:checked="false"
+            android:visible="false"/>
+        <item
+            android:id="@+id/gas_list_item"
+            android:title="@string/gas_list"
+            android:checked="false"
+            android:visible="false"/>
+
+        <item
+            android:id="@+id/task_calendar_item"
+            android:title="@string/task_calendar"
+            android:checked="false"
+            android:visible="false"/>
+
+    </group>
+</menu>
