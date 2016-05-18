@@ -34,10 +34,5 @@
         android:layout_margin="@dimen/fab_margin"
         android:src="@android:drawable/ic_input_add"/>
 
-            <!--<TextView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:text="@{viewPresenter.}"/>-->
-
 </android.support.design.widget.CoordinatorLayout>
 </layout>
