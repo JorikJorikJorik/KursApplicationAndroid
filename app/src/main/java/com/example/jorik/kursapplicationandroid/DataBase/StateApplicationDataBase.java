@@ -7,8 +7,7 @@ import com.example.jorik.kursapplicationandroid.Model.Enum.Role;
 import com.example.jorik.kursapplicationandroid.Model.Enum.StateApplication;
 
 
-
-    @Table(name = "StateApplicationDataBase")
+@Table(name = "StateApplicationDataBase")
     public class StateApplicationDataBase extends Model {
         @Column(name = "Role")
         public Role mRole;

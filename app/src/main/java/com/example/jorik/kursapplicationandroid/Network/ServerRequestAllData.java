@@ -5,5 +5,6 @@ package com.example.jorik.kursapplicationandroid.Network;
  */
 public interface ServerRequestAllData{
         public void getAllDataRequest();
+        public void deleteItemRequest(int id);
         public void unsubscribeRequest();
 }

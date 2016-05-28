@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="repair"
+            type="com.example.jorik.kursapplicationandroid.Network.DTO.RepairDTO"/>
+
+    </data>
+
+    <FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/card_radius"
+            app:cardElevation="@dimen/card_elevation"
+            app:cardUseCompatPadding="true"
+            app:contentPadding="@dimen/card_content_padding"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/bus_id_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{Integer.toString(repair.busId)}"/>
+
+                <TextView
+                    android:id="@+id/condition_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{repair.condition}"/>
+
+                <TextView
+                    android:id="@+id/repair_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:dateFormat="@{repair.time}"
+                    />
+
+            </LinearLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+    </FrameLayout>
+
+</layout>

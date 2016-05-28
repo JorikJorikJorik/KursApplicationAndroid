@@ -43,9 +43,9 @@ public class DriverListFragment extends Fragment {
         driverRecyclerView = (RecyclerView) view.findViewById(R.id.driver_recycler);
         addDriverButton = (FloatingActionButton) view.findViewById(R.id.driver_add_fab);
 
-        addDriverButton.setOnClickListener(v -> {
-
-        });
+//        addDriverButton.setOnClickListener(v -> {
+//
+//        });
 
         return view;
     }

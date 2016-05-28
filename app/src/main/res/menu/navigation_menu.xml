@@ -5,33 +5,39 @@
             android:id="@+id/work_list_item"
             android:title="@string/work_list"
             android:checked="false"
-            android:visible="false"/>
+            android:visible="false"
+            android:icon="@mipmap/work"/>
         <item
             android:id="@+id/bus_list_item"
             android:title="@string/bus_list"
             android:checked="false"
-            android:visible="false"/>
+            android:visible="false"
+            android:icon="@mipmap/bus"/>
         <item
             android:id="@+id/driver_list_item"
             android:title="@string/driver_list"
             android:checked="false"
-            android:visible="false"/>
+            android:visible="false"
+            android:icon="@mipmap/driver"/>
         <item
             android:id="@+id/repair_list_item"
             android:title="@string/repair_list"
             android:checked="false"
-            android:visible="false"/>
+            android:visible="false"
+            android:icon="@mipmap/repair"/>
         <item
             android:id="@+id/gas_list_item"
             android:title="@string/gas_list"
             android:checked="false"
-            android:visible="false"/>
+            android:visible="false"
+            android:icon="@mipmap/gas"/>
 
         <item
             android:id="@+id/task_calendar_item"
             android:title="@string/task_calendar"
             android:checked="false"
-            android:visible="false"/>
+            android:visible="false"
+            android:icon="@mipmap/calendar"/>
 
     </group>
 </menu>

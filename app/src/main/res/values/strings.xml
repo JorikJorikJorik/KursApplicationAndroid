@@ -43,4 +43,37 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="delete_one_item">Delete 1 item</string>
+    <string name="create_bus_form">Create Bus Form</string>
+    <string name="number">Number</string>
+    <string name="model">Model</string>
+    <string name="titile_driver">Driver details</string>
+    <string name="tiitle_bus">Bus details</string>
+    <string name="e">Details</string>
+
+    <string-array name="bus_condition">
+        <item>good</item>
+        <item>middle</item>
+        <item>bad</item>
+    </string-array>
+    
+    <string-array name="details_title_bus">
+        <item>Details</item>
+        <item>Gas</item>
+        <item>Repair</item>
+    </string-array>
+
+    <string-array name="details_title_driver">
+        <item>Details</item>
+    </string-array>
+
+    <array name="details_title_bus_icon">
+        <item>@mipmap/white_details</item>
+        <item>@mipmap/white_gas</item>
+        <item>@mipmap/white_repair</item>
+    </array>
+
+    <array name="details_title_driver_icon">
+        <item>@mipmap/white_details</item>
+    </array>
 </resources>

@@ -1,17 +1,6 @@
 package com.example.jorik.kursapplicationandroid.ViewModel;
 
-import android.content.Context;
 import android.databinding.BaseObservable;
-import android.databinding.BindingAdapter;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.widget.FrameLayout;
-
-import com.activeandroid.ActiveAndroid;
-import com.example.jorik.kursapplicationandroid.DataBase.StateApplicationDataBase;
-import com.example.jorik.kursapplicationandroid.Model.Enum.StateApplication;
-import com.example.jorik.kursapplicationandroid.View.Fragment.SignInActivityFragment;
-import com.example.jorik.kursapplicationandroid.View.Fragment.WorkListActivityFragment;
 
 /**
  * Created by jorik on 17.05.16.
