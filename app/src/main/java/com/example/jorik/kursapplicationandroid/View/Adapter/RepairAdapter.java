@@ -12,8 +12,11 @@ import android.view.ViewGroup;
 
 import com.example.jorik.kursapplicationandroid.Model.Enum.KindDataBase;
 import com.example.jorik.kursapplicationandroid.Network.DTO.BusDTO;
+import com.example.jorik.kursapplicationandroid.Network.DTO.FullRepairDTO;
 import com.example.jorik.kursapplicationandroid.Network.DTO.RepairDTO;
 import com.example.jorik.kursapplicationandroid.View.Activity.DetailsActivity;
+import com.example.jorik.kursapplicationandroid.View.Fragment.BusListFragment;
+import com.example.jorik.kursapplicationandroid.View.Fragment.RepairListFragment;
 import com.example.jorik.kursapplicationandroid.databinding.ItemBusListBinding;
 import com.example.jorik.kursapplicationandroid.databinding.ItemRepairListBinding;
 
@@ -24,12 +27,12 @@ import java.util.List;
  * Created by jorik on 27.05.16.
  */
 
-public class RepairAdapter  extends RecyclerView.Adapter<RepairAdapter.RepairViewHolder> {
+public class RepairAdapter  extends RecyclerView.Adapter<RepairAdapter.RepairViewHolder> implements RepairListFragment.AdapterFragmentCallback {
 
     Context mContext;
-    List<RepairDTO> mRepairDTOList;
+    List<FullRepairDTO> mRepairDTOList;
 
-    public RepairAdapter(Context mContext, List<RepairDTO> list){
+    public RepairAdapter(Context mContext, List<FullRepairDTO> list){
         this.mContext = mContext;
         mRepairDTOList = list;
     }
@@ -43,13 +46,19 @@ public class RepairAdapter  extends RecyclerView.Adapter<RepairAdapter.RepairVie
 
     @Override
     public void onBindViewHolder(RepairViewHolder holder, int position) {
-        RepairDTO itemRepair = mRepairDTOList.get(position);
-        holder.mItemRepairListBinding.setRepair(itemRepair);
+        FullRepairDTO itemRepair = mRepairDTOList.get(position);
+        holder.mItemRepairListBinding.setFullRepair(itemRepair);
     }
 
     @Override
     public int getItemCount() {
         return mRepairDTOList.size();
+    }
+
+    @Override
+    public void deleteItem(int position) {
+        mRepairDTOList.remove(position);
+        notifyItemRemoved(position);
     }
 
     class RepairViewHolder extends RecyclerView.ViewHolder {

@@ -1,23 +1,9 @@
 <resources>
-    <string name="app_name">KursApplicationAndroid</string>
-    <string name="work_list">Work list</string>
-    <string name="bus_list">Bus list</string>
-    <string name="driver_list">Driver list</string>
-    <string name="repair_list">Repair list</string>
-    <string name="gas_list">Gas list</string>
-    <string name="task_calendar">Task calendar</string>
+
+    <string name="app_name">Task Scheduler Bus</string>
     <string name="profession">Profession</string>
-    <string name="name_and_lastname">Name and Lastname</string>
-    <string name="closeDrawer">Navigation View</string>
-    <string name="openDrawer">Navigation View Closed</string>
-    <string name="title_activity_bus_list">BusListActivity</string>
-    <string name="title_activity_driver_list">DriverListActivity</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_work_list">WorkListActivity</string>
-    <string name="title_activity_gas_list">GasListActivity</string>
-    <string name="title_activity_repair_list">RepairListActivity</string>
-    <string name="title_activity_task_calendar">TaskCalendarActivity</string>
-    <string name="title_activity_sign_in">Sign in</string>
+
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -28,18 +14,10 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
-    <string name="title_activity_registration">Sign in</string>
-    <string name="title_activity_data_list">DataListActivity</string>
-    <string name="title_activity_details">DetailsActivity</string>
-    <string name="title_activity_create_data">CreateDataActivity</string>
-    <string name="title_activity_date">DateActivity</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_main2">Main2Activity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -47,16 +25,115 @@
     <string name="create_bus_form">Create Bus Form</string>
     <string name="number">Number</string>
     <string name="model">Model</string>
-    <string name="titile_driver">Driver details</string>
-    <string name="tiitle_bus">Bus details</string>
     <string name="e">Details</string>
+    <string name="tap_for_refresh">\nTap on the text</string>
+    <string name="no_data">No data</string>
+    <string name="enter_number_error">Enter number</string>
+    <string name="small_count_letter">Small amount letter</string>
+    <string name="error_validation">Error validation</string>
+
+
+    <!-- Title -->
+
+    <string name="title_driver">Driver details</string>
+    <string name="title_bus">Bus details</string>
+    <string name="title_activity_registration">Sign in</string>
+    <string name="title_activity_data_list">DataListActivity</string>
+    <string name="title_activity_details">DetailsActivity</string>
+    <string name="title_activity_create_data">CreateBusDataActivity</string>
+    <string name="title_activity_date">DateActivity</string>
+    <string name="title_activity_bus_list">BusListActivity</string>
+    <string name="title_activity_driver_list">DriverListActivity</string>
+    <string name="title_activity_work_list">WorkListActivity</string>
+    <string name="title_activity_gas_list">GasListActivity</string>
+    <string name="title_activity_repair_list">RepairListActivity</string>
+    <string name="title_activity_task_calendar">TaskCalendarActivity</string>
+    <string name="title_activity_sign_in">Sign in</string>
+    <string name="title_activity_setting">SettingActivity</string>
+    <string name="title_activity_create_work_data_acitvity">CreateWorkDataAcitvity</string>
+    <string name="title_activity_create_gus_data">CreateGusDataActivity</string>
+    <string name="create_bus_title">Create Bus</string>
+    <string name="create_repair_title">Create Repair Blank</string>
+    <string name="create_gas_title">Create Gas Blank</string>
+    <string name="create_work_title">Create Work Blank</string>
+    <string name="registration_title">Registration</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="setting_title">Setting</string>
+    <string name="title_activity_create_repair_data">CreateRepairDataActivity</string>
+    <string name="create_repair_blank">Create Repair Blank</string>
+
+
+
+    <!-- Navigation menu and drawer-->
+
+    <string name="work_list">Work list</string>
+    <string name="bus_list">Bus list</string>
+    <string name="driver_list">Driver list</string>
+    <string name="repair_list">Repair list</string>
+    <string name="gas_list">Gas list</string>
+    <string name="task_calendar">Task calendar</string>
+    <string name="name_and_lastname">Name and Lastname</string>
+    <string name="closeDrawer">Navigation View</string>
+    <string name="openDrawer">Navigation View Closed</string>
+
+    <!-- Delete response success -->
+
+    <string name="success_delete_bus">Success delete bus</string>
+    <string name="success_delete_driver">Success delete driver</string>
+    <string name="success_delete_gas">Success delete gas blank</string>
+    <string name="success_delete_repair">Success delete repair blank</string>
+
+    <!-- Delete response error -->
+
+    <string name="error_delete_bus">"Error delete bus : </string>
+    <string name="error_delete_driver">"Error delete driver : </string>
+    <string name="error_delete_gas">"Error delete gas blank : </string>
+    <string name="error_delete_repair">"Error delete repair blank : </string>
+
+    <!-- XMl Text -->
+
+    <string name="create_gas_form">Create Gas Form</string>
+    <string name="gas_type">Gas type</string>
+    <string name="condition_bus">Condition bus</string>
+    <string name="count_litre">Count litre</string>
+    <string name="all_cost">All cost</string>
+    <string name="empty_response"/>
+    <string name="driver_info">Driver info</string>
+    <string name="bus_info">Bus info</string>
+    <string name="choose_bus">Choose Bus</string>
+    <string name="choose_driver">Choose Driver</string>
+    <string name="choose_date">Choose Date</string>
+    <string name="second_name">Second name</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="driver">Driver</string>
+    <string name="qualification">Qualification</string>
+    <string name="salary">Salary</string>
+    <string name="experience">Experience</string>
+    <string name="passwor_not_same">Password is not same</string>
+    <string name="empty_field">Field сan not be blank</string>
+    <string name="show_password">Show password</string>
+    <string name="sign_out">Sign out</string>
+    <string name="time_start">Time start</string>
+    <string name="time_repeat">Time repeat</string>
+    <string name="condition_bus_after_repair">Condition bus after repair</string>
+
+
+    <!-- Array string -->
+
+    <string-array name="gas_type">
+        <item>A-95</item>
+        <item>A-92</item>
+        <item>A-86</item>
+        <item>A-70</item>
+    </string-array>
 
     <string-array name="bus_condition">
         <item>good</item>
         <item>middle</item>
         <item>bad</item>
     </string-array>
-    
+
     <string-array name="details_title_bus">
         <item>Details</item>
         <item>Gas</item>
@@ -67,6 +144,17 @@
         <item>Details</item>
     </string-array>
 
+    <string-array name="qualification_driver">
+        <item>A</item>
+        <item>B</item>
+        <item>C</item>
+        <item>D</item>
+        <item>E</item>
+        <item>F</item>
+
+    </string-array>
+    <!-- Array values -->
+
     <array name="details_title_bus_icon">
         <item>@mipmap/white_details</item>
         <item>@mipmap/white_gas</item>
@@ -76,4 +164,51 @@
     <array name="details_title_driver_icon">
         <item>@mipmap/white_details</item>
     </array>
+
+    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string-array name="pref_example_list_titles">
+        <item>Always</item>
+        <item>When possible</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+    <!-- Example settings for Data & Sync -->
+    <string name="pref_header_data_sync">Data &amp; sync</string>
+
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string-array name="pref_sync_frequency_titles">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+
+    <string-array name="list_preference_entries">
+        <item>Entry 1</item>
+        <item>Entry 2</item>
+        <item>Entry 3</item>
+    </string-array>
+
+    <string-array name="list_preference_entry_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+
 </resources>

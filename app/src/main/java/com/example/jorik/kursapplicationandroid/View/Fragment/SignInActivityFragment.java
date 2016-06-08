@@ -13,7 +13,11 @@ import com.example.jorik.kursapplicationandroid.R;
  */
 public class SignInActivityFragment extends Fragment {
 
-    public SignInActivityFragment() {
+    public static SignInActivityFragment newInstance() {
+        Bundle args = new Bundle();
+        SignInActivityFragment fragment = new SignInActivityFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override

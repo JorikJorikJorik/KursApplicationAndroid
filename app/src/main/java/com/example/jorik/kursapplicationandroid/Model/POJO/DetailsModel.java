@@ -62,7 +62,7 @@ public class DetailsModel {
     }
 
     public String createPageTitle(Context mContext){
-        return  mKindDataBase == KindDataBase.BUS ?  mContext.getString(R.string.tiitle_bus) : mContext.getString(R.string.titile_driver);
+        return  mKindDataBase == KindDataBase.BUS ?  mContext.getString(R.string.title_bus) : mContext.getString(R.string.title_driver);
     }
 
    

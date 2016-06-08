@@ -1,22 +1,22 @@
-package com.example.jorik.kursapplicationandroid.ViewModel;
+package com.example.jorik.kursapplicationandroid.ViewModel.Create;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.databinding.BaseObservable;
 import android.databinding.Bindable;
-import android.databinding.BindingAdapter;
-import android.graphics.Color;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.example.jorik.kursapplicationandroid.BR;
+import com.example.jorik.kursapplicationandroid.DataBase.ApplicationDataBase;
+import com.example.jorik.kursapplicationandroid.Model.Enum.Rights;
+import com.example.jorik.kursapplicationandroid.Model.Enum.Role;
+import com.example.jorik.kursapplicationandroid.Model.Enum.StateApplication;
 import com.example.jorik.kursapplicationandroid.Network.DTO.BusDTO;
 import com.example.jorik.kursapplicationandroid.Network.RestClient;
 import com.example.jorik.kursapplicationandroid.Network.ServiceInterface.BusService;
-import com.example.jorik.kursapplicationandroid.View.Fragment.CreateBusActivityFragment;
+import com.example.jorik.kursapplicationandroid.R;
+import com.example.jorik.kursapplicationandroid.View.Fragment.Create.CreateBusActivityFragment;
+import com.example.jorik.kursapplicationandroid.ViewModel.BaseViewModel;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -30,20 +30,31 @@ import static android.content.ContentValues.TAG;
  * Created by jorik on 22.05.16.
  */
 
-public class CreateBusViewModel extends BaseObservable {
+public class CreateBusViewModel extends BaseViewModel {
+
+    private final static int MIN_LENGTH_MODEL = 3;
+    private final static int MAX_LENGTH_MODEL = 25;
+    private final static int MAX_LENGTH_NUMBER = 4;
+    private final static int MIN_ERROR_LENGTH_LETTER_IN_MODEL = 4;
 
     private Context mContext;
     private BusDTO mBusDTO;
+    private Fragment mFragment;
+
     private String errorValidationModel;
     private String errorValidationNumber;
+
     private Observable<Boolean> isNumber;
     private Observable<Boolean> isModel;
+
     private boolean enableSendButton;
+
     private Subscription mSubscriptionNumber;
     private Subscription mSubscriptionModel;
+    private Subscription mSubscriptionEnable;
     private Subscription mSubscriptionRequest;
-    private Fragment mFragment;
-    private CreateBusCallback mCallback;
+
+    private ResponseCallback mCallback;
 
 
     public CreateBusViewModel(Context context, Fragment fragment) {
@@ -56,7 +67,7 @@ public class CreateBusViewModel extends BaseObservable {
     public String getNumber() {
         if (mBusDTO.getNumber() != null)
             return Integer.toString(mBusDTO.getNumber());
-        return "";
+        return mContext.getString(R.string.empty_response);
     }
 
     public void setNumber(String number) {
@@ -116,28 +127,25 @@ public class CreateBusViewModel extends BaseObservable {
     }
 
     private void validationNumber(String numberS) {
-        Integer number = null;
-        try {
-            number = Integer.parseInt(numberS);
-        } catch (Exception e) {
-            mBusDTO.setNumber(null);
-        }
-        Observable<Integer> validatorNumber = Observable.just(number)
-                .map(num -> {
-                    setErrorValidationNumber(num == null ? "Enter number" : null);
-                    return num;
-                })
-                .filter(num -> Integer.toString(num).length() < 4)
+
+        Observable<Integer> validatorNumber = Observable.just(numberS)
+                .filter(num -> num.length() < MAX_LENGTH_NUMBER)
+                .map(Integer::parseInt)
                 .filter(num -> num > 0);
 
 
         mSubscriptionNumber = validatorNumber.subscribe(new Subscriber<Integer>() {
             @Override
             public void onCompleted() {
+                setErrorValidationNumber(null);
+                isNumber = Observable.just(true);
             }
 
             @Override
             public void onError(Throwable e) {
+                setErrorValidationNumber(mContext.getString(R.string.enter_number_error));
+                mBusDTO.setNumber(null);
+                isNumber = Observable.just(false);
             }
 
             @Override
@@ -146,16 +154,15 @@ public class CreateBusViewModel extends BaseObservable {
             }
         });
 
-        isNumber = Observable.just(number).map(num -> !(num == null));
         enableSendButton();
     }
 
     private void validationModel(String modelString) {
 
         Observable<String> validatorModel = Observable.just(modelString)
-                .filter(model -> model.length() < 25)
+                .filter(model -> model.length() < MAX_LENGTH_MODEL)
                 .map(model -> {
-                    setErrorValidationModel(model.length() < 4 ? "Small amount letter" : null);
+                    setErrorValidationModel(model.length() < MIN_ERROR_LENGTH_LETTER_IN_MODEL ? mContext.getString(R.string.small_count_letter) : null);
                     return model;
                 });
 
@@ -166,7 +173,7 @@ public class CreateBusViewModel extends BaseObservable {
 
             @Override
             public void onError(Throwable e) {
-                setErrorValidationModel("Error validation");
+                setErrorValidationModel(mContext.getString(R.string.error_validation));
             }
 
             @Override
@@ -175,14 +182,15 @@ public class CreateBusViewModel extends BaseObservable {
             }
         });
 
-        isModel = validatorModel.map(model -> model.length() > 3 && model.length() < 25);
+        isModel = validatorModel.map(model -> model.length() > MIN_LENGTH_MODEL && model.length() < MAX_LENGTH_MODEL);
         enableSendButton();
     }
 
     public void sendRequestByCreate() {
-        if(mFragment instanceof CreateBusActivityFragment)
-            mCallback = (CreateBusActivityFragment) mFragment;
-        BusService busService = RestClient.getServiceInterface(BusService.class);
+        if (mFragment instanceof CreateBusActivityFragment)
+            mCallback = (ResponseCallback) mFragment;
+
+    BusService busService = RestClient.getServiceInterface(BusService.class);
         Observable<Integer> request = busService.createBus(mBusDTO);
         mSubscriptionRequest = request
                 .subscribeOn(Schedulers.io())
@@ -190,7 +198,7 @@ public class CreateBusViewModel extends BaseObservable {
                 .subscribe(new Subscriber<Integer>() {
                     @Override
                     public void onCompleted() {
-                  }
+                    }
 
                     @Override
                     public void onError(Throwable e) {
@@ -205,6 +213,12 @@ public class CreateBusViewModel extends BaseObservable {
                 });
     }
 
+    private void enableSendButton() {
+        if (isNumber != null && isModel != null) {
+            Observable<Boolean> enableSend = Observable.combineLatest(isNumber, isModel, (number, model) -> number && model);
+            mSubscriptionEnable = enableSend.subscribe(this::setEnableSendButton);
+        }
+    }
 
     public void unsubscribe() {
         if (mSubscriptionRequest != null)
@@ -213,19 +227,8 @@ public class CreateBusViewModel extends BaseObservable {
             mSubscriptionNumber.unsubscribe();
         if (mSubscriptionModel != null)
             mSubscriptionModel.unsubscribe();
+        if (mSubscriptionEnable != null)
+            mSubscriptionEnable.unsubscribe();
     }
-
-    private void enableSendButton() {
-        if (isNumber != null && isModel != null) {
-            Observable<Boolean> enableSend = Observable.combineLatest(isNumber, isModel, (number, model) -> number && model);
-            enableSend.subscribe(this::setEnableSendButton);
-        }
-    }
-
-    public interface CreateBusCallback {
-        void responseFromServer(Integer response);
-    }
-
-
 
 }

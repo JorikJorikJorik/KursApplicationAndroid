@@ -1,5 +1,6 @@
 package com.example.jorik.kursapplicationandroid.Network.ServiceInterface;
 
+import com.example.jorik.kursapplicationandroid.Network.DTO.FullRepairDTO;
 import com.example.jorik.kursapplicationandroid.Network.DTO.RepairDTO;
 
 import java.util.List;
@@ -23,9 +24,15 @@ public interface RepairService {
     @GET("RepairList/{id}")
     Observable<RepairDTO> getRepairList(@Path("id") int id);
 
-    @POST("RepairList")
-    Observable<Integer> createRepairList(@Body RepairDTO repairList);
+    @POST("RepairList/{number}")
+    Observable<Integer> createRepairList(@Body RepairDTO repairList, @Path("number") int number);
 
     @DELETE("RepairList/{id}")
     Observable<Integer> deleteRepairList(@Path("id") int id);
+
+    @GET("RepairList/Full")
+    Observable<List<FullRepairDTO>> getAllFullRepairList();
+
+    @GET("RepairList/Full/{number}")
+    Observable<List<FullRepairDTO>> getAllFullRepairListForUser(@Path("number") int number);
 }

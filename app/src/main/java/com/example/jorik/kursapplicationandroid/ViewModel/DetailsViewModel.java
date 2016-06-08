@@ -23,7 +23,7 @@ import com.example.jorik.kursapplicationandroid.View.Adapter.DetailsPagerAdapter
  * Created by jorik on 26.05.16.
  */
 
-public class DetailsViewModel extends BaseObservable {
+public class DetailsViewModel extends BaseViewModel {
 
     private static final int COUNT_PAGES_BUS = 3;
     private static final int COUNT_PAGES_OTHER = 1;

@@ -6,14 +6,14 @@
     <data>
 
         <variable
-            name="repair"
-            type="com.example.jorik.kursapplicationandroid.Network.DTO.RepairDTO"/>
+            name="fullRepair"
+            type="com.example.jorik.kursapplicationandroid.Network.DTO.FullRepairDTO"/>
 
     </data>
 
     <FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
@@ -30,22 +30,35 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/bus_id_text"
+                    android:id="@+id/bus_number_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{Integer.toString(repair.busId)}"/>
+                    android:text='@{"Number: " + Integer.toString(fullRepair.busDTO.number)}'/>
+
+                <TextView
+                    android:id="@+id/bus_model_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text='@{"Model: " + fullRepair.busDTO.model}'/>
+
+
+                <TextView
+                    android:id="@+id/bus_condition_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text='@{"Before: " + fullRepair.busDTO.condition}'/>
 
                 <TextView
                     android:id="@+id/condition_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{repair.condition}"/>
+                    android:text='@{"After: " + fullRepair.repairDTO.condition}'/>
 
                 <TextView
                     android:id="@+id/repair_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:dateFormat="@{repair.time}"
+                    app:dateFormat='@{fullRepair.repairDTO.time}'
                     />
 
             </LinearLayout>

@@ -2,8 +2,10 @@ package com.example.jorik.kursapplicationandroid.Model.POJO;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
+import android.support.v7.widget.RecyclerView;
 
 
+import com.example.jorik.kursapplicationandroid.Model.Enum.KindDataBase;
 import com.example.jorik.kursapplicationandroid.Model.Enum.Rights;
 import com.example.jorik.kursapplicationandroid.View.Adapter.BusAdapter;
 
@@ -15,33 +17,16 @@ public class BusModel {
 
     private Rights mRights;
     private int visibleFAB;
-    private int visibleRecyclerLayout;
-    private int visibleError;
-    private int visibleProgress;
+    private boolean completeRequest;
+    private boolean visibleProgress;
     private String errorString;
-    private BusAdapter busAdapter;
+    private BusAdapter mAdapter;
 
-    public int getVisibleRecyclerLayout() {
-        return visibleRecyclerLayout;
-    }
-
-    public void setVisibleRecyclerLayout(int visibleRefresh) {
-        this.visibleRecyclerLayout = visibleRefresh;
-    }
-
-    public int getVisibleError() {
-        return visibleError;
-    }
-
-    public void setVisibleError(int visibleError) {
-        this.visibleError = visibleError;
-    }
-
-    public int getVisibleProgress() {
+    public boolean getVisibleProgress() {
         return visibleProgress;
     }
 
-    public void setVisibleProgress(int visibleProgress) {
+    public void setVisibleProgress(boolean visibleProgress) {
         this.visibleProgress = visibleProgress;
     }
 
@@ -54,11 +39,11 @@ public class BusModel {
     }
 
     public BusAdapter getBusAdapter() {
-        return busAdapter;
+        return mAdapter;
     }
 
-    public void setBusAdapter(BusAdapter busAdapter) {
-        this.busAdapter = busAdapter;
+    public void setBusAdapter(BusAdapter mAdapter) {
+        this.mAdapter = mAdapter;
     }
 
     public Rights getRights() {
@@ -75,5 +60,13 @@ public class BusModel {
 
     public void setVisibleFAB(int visibleFAB) {
         this.visibleFAB = visibleFAB;
+    }
+
+    public boolean getCompleteRequest() {
+        return completeRequest;
+    }
+
+    public void setCompleteRequest(boolean completeRequest) {
+        this.completeRequest = completeRequest;
     }
 }

@@ -1,6 +1,8 @@
 package com.example.jorik.kursapplicationandroid.Network.ServiceInterface;
 
 import com.example.jorik.kursapplicationandroid.Network.DTO.BusDTO;
+import com.example.jorik.kursapplicationandroid.Network.DTO.FullGasDTO;
+import com.example.jorik.kursapplicationandroid.Network.DTO.FullRepairDTO;
 import com.example.jorik.kursapplicationandroid.Network.DTO.GasDTO;
 import com.example.jorik.kursapplicationandroid.Network.DTO.RepairDTO;
 
@@ -32,9 +34,9 @@ public interface BusService {
     Observable<Integer> deleteBus(@Path("id") int id);
 
     @GET("BusValues/Repair/{id}")
-    Observable<List<RepairDTO>> getRepairListById(@Path("id") int id);
+    Observable<List<FullRepairDTO>> getRepairListById(@Path("id") int id);
 
     @GET("BusValues/Gas/{id}")
-    Observable<List<GasDTO>> getGasListById(@Path("id") int id);
+    Observable<List<FullGasDTO>> getGasListById(@Path("id") int id);
 
 }

@@ -26,7 +26,7 @@ import static com.example.jorik.kursapplicationandroid.View.Fragment.DetailsActi
  * Created by jorik on 26.05.16.
  */
 
-public class DetailsPagerFragment extends Fragment {
+public class DetailsPagerFragment extends BaseFragment {
 
     private static final String ARGUMENTS_NUMBER_PAGES = "position_pages";
     private static final String ARGUMENTS_KIND_ENUM_PAGES = "kind_pages";

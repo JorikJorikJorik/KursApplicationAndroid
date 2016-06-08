@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="gas"
+            type="com.example.jorik.kursapplicationandroid.ViewModel.Create.CreateGasViewModel"/>
+
+    </data>
+
+    <android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/gas_create_coordination_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        tools:context="com.example.jorik.kursapplicationandroid.View.Activity.Create.CreateGasDataActivity">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay"/>
+        </android.support.design.widget.AppBarLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_text"
+                android:gravity="center"
+                android:text="@string/create_gas_form"/>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/count_gas_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:error="@{gas.errorValidationCount}">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/count_gas_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/count_litre"
+                    android:text="@={gas.count}"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/cost_gas_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:error="@{gas.errorValidationCost}">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/cost_gas_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/all_cost"
+                    android:text="@={gas.cost}"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_text"
+                android:text="@string/gas_type"/>
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/type_gas_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spinner_height"
+                android:entries="@array/gas_type">
+
+            </android.support.v7.widget.AppCompatSpinner>
+
+        </LinearLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@android:drawable/stat_sys_upload"
+            app:enable="@{gas.enableSendButton}"
+            app:onClick="@{gas.sendRequestByCreate}"/>
+
+
+    </android.support.design.widget.CoordinatorLayout>
+</layout>
+

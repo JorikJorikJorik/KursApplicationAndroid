@@ -16,6 +16,7 @@
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.CardView
+            android:id="@+id/driver_card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardUseCompatPadding="true"
@@ -32,25 +33,25 @@
                     android:id="@+id/secondname_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{driver.secondname}"/>
+                    android:text='@{"Secondname: "+driver.secondname ?? "secondname" }'/>
 
                 <TextView
                     android:id="@+id/qualification_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{driver.qualification}"/>
+                    android:text='@{"Qualification: "+driver.qualification ?? "qualification"}'/>
 
                 <TextView
                     android:id="@+id/experience_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{Integer.toString(driver.experience)}"/>
+                    android:text='@{"Experience: "+Integer.toString(driver.experience ?? 0) + " year"}'/>
 
                 <TextView
                     android:id="@+id/salary_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{Integer.toString(driver.salary)}"/>
+                    android:text='@{"Salary: "+Integer.toString(driver.salary ?? 0) + " grn."}'/>
             </LinearLayout>
 
         </android.support.v7.widget.CardView>

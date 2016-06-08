@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.jorik.kursapplicationandroid.Network.DTO.GasDTO;
+import com.example.jorik.kursapplicationandroid.View.Fragment.BusListFragment;
+import com.example.jorik.kursapplicationandroid.View.Fragment.GasListFragment;
 import com.example.jorik.kursapplicationandroid.databinding.ItemGasListBinding;
 
 import java.util.List;
@@ -16,7 +18,7 @@ import java.util.List;
  * Created by jorik on 27.05.16.
  */
 
-public class GasAdapter extends RecyclerView.Adapter<GasAdapter.GasViewHolder> {
+public class GasAdapter extends RecyclerView.Adapter<GasAdapter.GasViewHolder> implements GasListFragment.AdapterFragmentCallback {
 
     private Context mContext;
     private List<GasDTO> mGasDTOList;
@@ -43,6 +45,12 @@ public class GasAdapter extends RecyclerView.Adapter<GasAdapter.GasViewHolder> {
         GasDTO mGasDTO = mGasDTOList.get(position);
         holder.mItemGasListBinding.setGas(mGasDTO);
 
+    }
+
+    @Override
+    public void deleteItem(int position) {
+        mGasDTOList.remove(position);
+        notifyItemRemoved(position);
     }
 
     public class GasViewHolder extends RecyclerView.ViewHolder {

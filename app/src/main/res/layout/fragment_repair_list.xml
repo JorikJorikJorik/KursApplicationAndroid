@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/tools"
+        xmlns="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="com.example.jorik.kursapplicationandroid.Model.Enum.Rights"/>
+        <import type="android.view.View"/>
+
+        <variable
+            name="repairViewModel"
+            type="com.example.jorik.kursapplicationandroid.ViewModel.RepairViewModel"/>
+    </data>
+
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/repair_coordination_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/refresh_repair_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:onRefresh="@{repairViewModel.getAllDataRepair}">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/repair_recycler"
+                android:layout_width="380dp"
+                android:layout_height="573dp"
+                android:visibility="@{!repairViewModel.completeRequestRepair ? View.VISIBLE : View.INVISIBLE}"
+                app:adapter='@{repairViewModel.repairAdapter}'>
+
+            </android.support.v7.widget.RecyclerView>
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <TextView
+            android:id="@+id/error_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/button"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:text="@{repairViewModel.errorStringRepair}"
+            android:visibility="@{repairViewModel.completeRequestRepair ? View.INVISIBLE : View.VISIBLE}"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            app:onClick="@{repairViewModel.getAllDataRepair}"/>
+
+        <ProgressBar
+            android:id="@+id/repair_progress"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:visibility="@{repairViewModel.visibleProgressRepair ? View.VISIBLE : View.INVISIBLE}"/>
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/repair_add_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@android:drawable/ic_input_add"
+            android:visibility="@{repairViewModel.visibleFABRepair}"
+            app:onClick= "@{repairViewModel.moveToCreateActivity}"/>
+
+    </android.support.design.widget.CoordinatorLayout>
+</layout>

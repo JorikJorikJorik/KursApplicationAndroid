@@ -3,27 +3,22 @@ package com.example.jorik.kursapplicationandroid.ViewModel;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.os.Build;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.example.jorik.kursapplicationandroid.BR;
-import com.example.jorik.kursapplicationandroid.Model.Enum.KindDataBase;
+import com.example.jorik.kursapplicationandroid.Model.Enum.ConditionClickItemAdapter;
 import com.example.jorik.kursapplicationandroid.Model.Enum.Rights;
 import com.example.jorik.kursapplicationandroid.Model.POJO.BusModel;
 import com.example.jorik.kursapplicationandroid.Network.DTO.BusDTO;
-import com.example.jorik.kursapplicationandroid.Network.DTO.DriverDTO;
 import com.example.jorik.kursapplicationandroid.Network.RestClient;
-import com.example.jorik.kursapplicationandroid.Network.ServerRequestAllData;
 import com.example.jorik.kursapplicationandroid.Network.ServiceInterface.BusService;
-import com.example.jorik.kursapplicationandroid.Network.ServiceInterface.DriverService;
-import com.example.jorik.kursapplicationandroid.View.Activity.CreateDataActivity;
-import com.example.jorik.kursapplicationandroid.View.Activity.DetailsActivity;
+import com.example.jorik.kursapplicationandroid.R;
+import com.example.jorik.kursapplicationandroid.View.Activity.Create.CreateBusDataActivity;
 import com.example.jorik.kursapplicationandroid.View.Adapter.BusAdapter;
 
 import java.util.ArrayList;
@@ -39,77 +34,61 @@ import rx.schedulers.Schedulers;
 /**
  * Created by jorik on 17.05.16.
  */
-public class BusViewModel extends BaseObservable implements ServerRequestAllData {
+public class BusViewModel extends BaseViewModel {
 
     private static final String TAG = BusViewModel.class.getSimpleName();
+    private static final int OK_RESPONSE = 200;
 
     private Context mContext;
+
     private List<BusDTO> listBusDTO;
-    private Subscription mSubscriptionGetAll;
-    private Subscription mSubscriptionDelete;
+
+    private BusService mBusService;
+    private Subscription mSubscriptionGetAllBus;
+    private Subscription mSubscriptionDeleteBus;
+
     private BusModel mBusModel;
     private SwipeRefreshLayout mSwipeRefresh;
-    private BusService mBusService;
 
-    public BusViewModel(Context context, SwipeRefreshLayout swipeRefresh, Rights rights) {
-        mContext = context;
-        mSwipeRefresh = swipeRefresh;
+    public BusViewModel(Context mContext, SwipeRefreshLayout mSwipeRefresh, Rights rights) {
+        this.mContext = mContext;
+        this.mSwipeRefresh = mSwipeRefresh;
         mBusModel = new BusModel();
         listBusDTO = new ArrayList<>();
         mBusService = RestClient.getServiceInterface(BusService.class);
-        setRights(rights);
-    }
-
-    @Bindable
-    public int getVisibleRecyclerLayout() {
-        return mBusModel.getVisibleRecyclerLayout();
-    }
-
-    public void setVisibleRecyclerLayout(int visibleRefresh) {
-        mBusModel.setVisibleRecyclerLayout(visibleRefresh);
-        notifyPropertyChanged(BR.visibleRecyclerLayout);
+        setRightsBus(rights);
+        setVisibleFABBus(View.INVISIBLE);
 
     }
 
     @Bindable
-    public int getVisibleError() {
-        return mBusModel.getVisibleError();
-    }
-
-    public void setVisibleError(int visibleError) {
-        mBusModel.setVisibleError(visibleError);
-        notifyPropertyChanged(BR.visibleError);
-
-    }
-
-    @Bindable
-    public int getVisibleProgress() {
+    public boolean getVisibleProgressBus() {
         return mBusModel.getVisibleProgress();
     }
 
-    public void setVisibleProgress(int visibleProgress) {
+    public void setVisibleProgressBus(boolean visibleProgress) {
         mBusModel.setVisibleProgress(visibleProgress);
-        notifyPropertyChanged(BR.visibleProgress);
+        notifyPropertyChanged(BR.visibleProgressBus);
     }
 
     @Bindable
-    public int getVisibleFAB() {
+    public int getVisibleFABBus() {
         return mBusModel.getVisibleFAB();
     }
 
-    public void setVisibleFAB(int visibleFAB) {
+    public void setVisibleFABBus(int visibleFAB) {
         mBusModel.setVisibleFAB(visibleFAB);
-        notifyPropertyChanged(BR.visibleFAB);
+        notifyPropertyChanged(BR.visibleFABBus);
     }
 
     @Bindable
-    public String getErrorString() {
+    public String getErrorStringBus() {
         return mBusModel.getErrorString();
     }
 
-    public void setErrorString(String errorString) {
+    public void setErrorStringBus(String errorString) {
         mBusModel.setErrorString(errorString);
-        notifyPropertyChanged(BR.errorString);
+        notifyPropertyChanged(BR.errorStringBus);
     }
 
     @Bindable
@@ -117,108 +96,119 @@ public class BusViewModel extends BaseObservable implements ServerRequestAllData
         return mBusModel.getBusAdapter();
     }
 
-    public void setBusAdapter(BusAdapter busAdapter) {
-        mBusModel.setBusAdapter(busAdapter);
+    public void setBusAdapter(BusAdapter BusAdapter) {
+        mBusModel.setBusAdapter(BusAdapter);
         notifyPropertyChanged(BR.busAdapter);
     }
 
     @Bindable
-    public Rights getRights() {
+    public Rights getRightsBus() {
         return mBusModel.getRights();
     }
 
-    public void setRights(Rights rights) {
+    public void setRightsBus(Rights rights) {
         mBusModel.setRights(rights);
-        notifyPropertyChanged(BR.rights);
+        notifyPropertyChanged(BR.rightsBus);
+    }
+
+    @Bindable
+    public boolean getCompleteRequestBus() {
+        return mBusModel.getCompleteRequest();
+    }
+
+    public void setCompleteRequestBus(boolean completeRequest) {
+        mBusModel.setCompleteRequest(completeRequest);
+        notifyPropertyChanged(BR.completeRequestBus);
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    @Override
-    public void getAllDataRequest() {
+    public void getAllDataBus() {
 
         if (!mSwipeRefresh.isRefreshing()) {
-            setVisibleProgress(View.VISIBLE);
+            setVisibleProgressBus(true);
         }
-        setVisibleError(View.INVISIBLE);
-
-        if (listBusDTO != null)
+        if (listBusDTO != null) {
             listBusDTO.clear();
+        }
 
-        Observable<List<BusDTO>> busDTOObservable = mBusService.getAllBuses();
-        mSubscriptionGetAll = busDTOObservable
+        Observable<List<BusDTO>> BusDTOObservable = mBusService.getAllBuses();
+        mSubscriptionGetAllBus = BusDTOObservable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(Observable::from)
-                .toSortedList((item1, item2) -> Long.compare(item1.getBusId(), item2.getBusId()))
+                .toSortedList((item1, item2) -> Integer.compare(item1.getBusId(), item2.getBusId()))
                 .flatMap(Observable::from)
                 .subscribe(new Subscriber<BusDTO>() {
                     @Override
                     public void onCompleted() {
                         hideProgressAndRefresh(true);
-                        setBusAdapter(new BusAdapter(mContext, listBusDTO));
+                        if (listBusDTO.size() == 0)
+                            onError(new Throwable(mContext.getString(R.string.no_data)));
+                        setBusAdapter(new BusAdapter(mContext, listBusDTO, ConditionClickItemAdapter.LIST));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(TAG, e.toString());
                         hideProgressAndRefresh(false);
-                        setErrorString(e.toString() + "\nTap on the text");
+                        setErrorStringBus(e.toString() + mContext.getString(R.string.tap_for_refresh));
                     }
 
                     @Override
-                    public void onNext(BusDTO busDTO) {
-                        listBusDTO.add(busDTO);
+                    public void onNext(BusDTO BusDTO) {
+                        listBusDTO.add(BusDTO);
                     }
                 });
 
     }
 
-    @Override
-    public void deleteItemRequest(int id) {
-        Observable<Integer> responseObservable = mBusService.deleteBus(listBusDTO.get(id).getBusId());
-        mSubscriptionDelete = responseObservable
+    public void deleteBus(int id) {
+
+        Observable<Integer> responseBusObservable = mBusService.deleteBus(listBusDTO.get(id).getBusId());
+        mSubscriptionDeleteBus = responseBusObservable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Integer>() {
                     @Override
                     public void onCompleted() {
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(TAG, e.toString());
-                        Toast.makeText(mContext, e.toString(), Toast.LENGTH_SHORT).show();
+                        deleteToast(e.toString());
                     }
 
                     @Override
                     public void onNext(Integer integer) {
-                        Toast.makeText(mContext, integer == 200 ? "Success delete item" : "Error delete item : " + integer.toString(), Toast.LENGTH_SHORT).show();
+                        deleteToast(integer == OK_RESPONSE ? mContext.getString(R.string.success_delete_bus) : mContext.getString(R.string.error_delete_bus) + integer.toString());
                     }
                 });
 
     }
 
-    @Override
     public void unsubscribeRequest() {
-        if (mSubscriptionGetAll != null)
-            mSubscriptionGetAll.unsubscribe();
-        if (mSubscriptionDelete != null)
-            mSubscriptionDelete.unsubscribe();
+        if (mSubscriptionGetAllBus != null)
+            mSubscriptionGetAllBus.unsubscribe();
+        if (mSubscriptionDeleteBus != null)
+            mSubscriptionDeleteBus.unsubscribe();
+    }
 
+    private void deleteToast(String response) {
+        Toast.makeText(mContext, response, Toast.LENGTH_SHORT).show();
     }
 
     private void hideProgressAndRefresh(boolean completed) {
         if (mSwipeRefresh.isRefreshing()) {
             mSwipeRefresh.setRefreshing(false);
         }
-        setVisibleProgress(View.INVISIBLE);
-        setVisibleError(completed ? View.INVISIBLE : View.VISIBLE);
-        setVisibleRecyclerLayout(completed ? View.VISIBLE : View.INVISIBLE);
-        setVisibleFAB(completed ? getRights() == Rights.CHANGE ?  View.VISIBLE : View.INVISIBLE : View.INVISIBLE);
+        setVisibleProgressBus(false);
+        setCompleteRequestBus(completed);
+        setVisibleFABBus(completed ? getRightsBus() == Rights.CHANGE ? View.VISIBLE : View.INVISIBLE : View.INVISIBLE);
     }
 
     public void moveToCreateActivity() {
-        mContext.startActivity(new Intent(mContext, CreateDataActivity.class));
+        mContext.startActivity(new Intent(mContext, CreateBusDataActivity.class));
     }
-
 }

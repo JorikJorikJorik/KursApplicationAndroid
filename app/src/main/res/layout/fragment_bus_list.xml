@@ -6,7 +6,6 @@
     <data>
 
         <import type="com.example.jorik.kursapplicationandroid.Model.Enum.Rights"/>
-
         <import type="android.view.View"/>
 
         <variable
@@ -28,13 +27,13 @@
             android:id="@+id/refresh_bus_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            >
+            app:onRefresh="@{busViewModel.getAllDataBus}">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/bus_recycler"
                 android:layout_width="380dp"
                 android:layout_height="573dp"
-                android:visibility="@{busViewModel.visibleRecyclerLayout}"
+                android:visibility="@{busViewModel.completeRequestBus ? View.VISIBLE : View.INVISIBLE}"
                 app:adapter='@{busViewModel.busAdapter}'>
 
             </android.support.v7.widget.RecyclerView>
@@ -48,9 +47,10 @@
             android:layout_alignStart="@+id/button"
             android:layout_centerVertical="true"
             android:layout_gravity="center"
-            android:text="@{busViewModel.errorString}"
-            android:visibility="@{busViewModel.visibleError}"
-            android:textAppearance="?android:attr/textAppearanceLarge"/>
+            android:text="@{busViewModel.errorStringBus}"
+            android:visibility="@{busViewModel.completeRequestBus ? View.INVISIBLE : View.VISIBLE}"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            app:onClick="@{busViewModel.getAllDataBus}"/>
 
         <ProgressBar
             android:id="@+id/bus_progress"
@@ -60,7 +60,7 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:layout_gravity="center"
-            android:visibility="@{busViewModel.visibleProgress}"/>
+            android:visibility="@{busViewModel.visibleProgressBus ? View.VISIBLE : View.INVISIBLE}"/>
 
 
         <android.support.design.widget.FloatingActionButton
@@ -70,7 +70,8 @@
             android:layout_gravity="bottom|right"
             android:layout_margin="@dimen/fab_margin"
             android:src="@android:drawable/ic_input_add"
-            android:visibility="@{busViewModel.visibleFAB}"/>
+            android:visibility="@{busViewModel.visibleFABBus}"
+            app:onClick= "@{busViewModel.moveToCreateActivity}"/>
 
     </android.support.design.widget.CoordinatorLayout>
 </layout>

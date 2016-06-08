@@ -9,10 +9,13 @@ import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 
 import com.example.jorik.kursapplicationandroid.BR;
+import com.example.jorik.kursapplicationandroid.Model.Enum.ConditionClickItemAdapter;
 import com.example.jorik.kursapplicationandroid.Model.Enum.KindDataBase;
 import com.example.jorik.kursapplicationandroid.Model.POJO.DetailsPageModel;
 import com.example.jorik.kursapplicationandroid.Network.DTO.BusDTO;
 import com.example.jorik.kursapplicationandroid.Network.DTO.DriverDTO;
+import com.example.jorik.kursapplicationandroid.Network.DTO.FullGasDTO;
+import com.example.jorik.kursapplicationandroid.Network.DTO.FullRepairDTO;
 import com.example.jorik.kursapplicationandroid.Network.DTO.GasDTO;
 import com.example.jorik.kursapplicationandroid.Network.DTO.RepairDTO;
 import com.example.jorik.kursapplicationandroid.Network.RestClient;
@@ -20,8 +23,10 @@ import com.example.jorik.kursapplicationandroid.Network.ServiceInterface.BusServ
 import com.example.jorik.kursapplicationandroid.Network.ServiceInterface.DriverService;
 import com.example.jorik.kursapplicationandroid.Network.ServiceInterface.GasService;
 import com.example.jorik.kursapplicationandroid.Network.ServiceInterface.RepairService;
+import com.example.jorik.kursapplicationandroid.R;
 import com.example.jorik.kursapplicationandroid.View.Adapter.BusAdapter;
 import com.example.jorik.kursapplicationandroid.View.Adapter.DriverAdapter;
+import com.example.jorik.kursapplicationandroid.View.Adapter.FullGasAdapter;
 import com.example.jorik.kursapplicationandroid.View.Adapter.GasAdapter;
 import com.example.jorik.kursapplicationandroid.View.Adapter.RepairAdapter;
 import com.google.common.collect.Lists;
@@ -42,7 +47,7 @@ import rx.schedulers.Schedulers;
  * Created by jorik on 27.05.16.
  */
 
-public class DetailsPagerViewModel extends BaseObservable {
+public class DetailsPagerViewModel extends BaseViewModel {
 
     private Context mContext;
     private DetailsPageModel mDetailsPageModel;
@@ -109,7 +114,7 @@ public class DetailsPagerViewModel extends BaseObservable {
                     break;
                 case 1: getGasInfo(id);
                     break;
-                case 2: getRepairInfo(id);
+                case 2:getRepairInfo(id);
                     break;
             }
         } else {
@@ -131,13 +136,13 @@ public class DetailsPagerViewModel extends BaseObservable {
                     @Override
                     public void onCompleted() {
                         showOrHideResult(true);
-                        setAdapter(new DriverAdapter(mContext, driverInfo));
+                        setAdapter(new DriverAdapter(mContext, driverInfo, ConditionClickItemAdapter.DETAILS));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         showOrHideResult(false);
-                        setErrorText(e.toString() + "\nTap text");
+                        setErrorText(e.toString() + mContext.getString(R.string.tap_for_refresh));
                     }
 
                     @Override
@@ -160,13 +165,13 @@ public class DetailsPagerViewModel extends BaseObservable {
                     @Override
                     public void onCompleted() {
                         showOrHideResult(true);
-                        setAdapter(new BusAdapter(mContext, busInfo));
+                        setAdapter(new BusAdapter(mContext, busInfo, ConditionClickItemAdapter.DETAILS));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         showOrHideResult(false);
-                        setErrorText(e.toString() + "\nTap text");
+                        setErrorText(e.toString() + mContext.getString(R.string.tap_for_refresh));
                     }
 
                     @Override
@@ -180,32 +185,32 @@ public class DetailsPagerViewModel extends BaseObservable {
     private void getRepairInfo(int id) {
         setProgress(true);
 
-        List<RepairDTO> repairInfo = new ArrayList<>();
+        List<FullRepairDTO> repairInfo = new ArrayList<>();
         BusService busService = RestClient.getServiceInterface(BusService.class);
-        Observable<List<RepairDTO>> repairDTOListObservable = busService.getRepairListById(id);
+        Observable<List<FullRepairDTO>> repairDTOListObservable = busService.getRepairListById(id);
         mSubscriptionRepairList = repairDTOListObservable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(Observable::from)
-                .toSortedList((item1, item2) -> Integer.compare(item1.getServiceListId(), item2.getServiceListId()) )
+                .toSortedList((item1, item2) -> Integer.compare(item1.getRepairDTO().getServiceListId(), item2.getRepairDTO().getServiceListId()) )
                 .flatMap(Observable::from)
-                .subscribe(new Subscriber<RepairDTO>() {
+                .subscribe(new Subscriber<FullRepairDTO>() {
                     @Override
                     public void onCompleted() {
                         showOrHideResult(true);
-                        if(repairInfo.size() == 0) onError(new Throwable("No data"));
+                        if(repairInfo.size() == 0) onError(new Throwable(mContext.getString(R.string.no_data)));
                         setAdapter(new RepairAdapter(mContext, repairInfo));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         showOrHideResult(false);
-                        setErrorText(e.toString() + "\nTap text");
+                        setErrorText(e.toString() + mContext.getString(R.string.tap_for_refresh));
                     }
 
                     @Override
-                    public void onNext(RepairDTO repairDTO) {
-                        repairInfo.add(repairDTO);
+                    public void onNext(FullRepairDTO fullRepairDTO) {
+                        repairInfo.add(fullRepairDTO);
                     }
                 });
     }
@@ -214,32 +219,32 @@ public class DetailsPagerViewModel extends BaseObservable {
     private void getGasInfo(int id) {
         setProgress(true);
 
-        List<GasDTO> gasInfo = new ArrayList<>();
+        List<FullGasDTO> gasInfo = new ArrayList<>();
         BusService busService = RestClient.getServiceInterface(BusService.class);
-        Observable<List<GasDTO>> gasDTOListObservable = busService.getGasListById(id);
+        Observable<List<FullGasDTO>> gasDTOListObservable = busService.getGasListById(id);
         mSubscriptionGasList = gasDTOListObservable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(Observable::from)
-                .toSortedList((item1, item2) -> Integer.compare(item1.getGasListId(), item2.getGasListId()))
+                .toSortedList((item1, item2) -> Integer.compare(item1.getGasDTO().getGasListId(), item2.getGasDTO().getGasListId()))
                 .flatMap(Observable::from)
-                .subscribe(new Subscriber<GasDTO>() {
+                .subscribe(new Subscriber<FullGasDTO>() {
                     @Override
                     public void onCompleted() {
                         showOrHideResult(true);
-                        if(gasInfo.size() == 0) onError(new Throwable("No data"));
-                        setAdapter(new GasAdapter(mContext, gasInfo));
+                        if(gasInfo.size() == 0) onError(new Throwable(mContext.getString(R.string.no_data)));
+                        setAdapter(new FullGasAdapter(mContext, gasInfo));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         showOrHideResult(false);
-                        setErrorText(e.toString() + "\nTap text");
+                        setErrorText(e.toString() + mContext.getString(R.string.tap_for_refresh));
                     }
 
                     @Override
-                    public void onNext(GasDTO gasDTO) {
-                        gasInfo.add(gasDTO);
+                    public void onNext(FullGasDTO fullGasDTO) {
+                        gasInfo.add(fullGasDTO);
                     }
                 });
 
