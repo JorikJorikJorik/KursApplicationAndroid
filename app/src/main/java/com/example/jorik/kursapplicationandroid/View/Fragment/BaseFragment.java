@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.jorik.kursapplicationandroid.Model.Enum.StateApplication;
+
 /**
  * Created by jorik on 01.06.16.
  */
@@ -31,6 +33,10 @@ public class BaseFragment extends Fragment{
 
     public interface AdapterFragmentCallback {
         void deleteItem(int position);
+    }
+
+    public interface MenuChangeCallback {
+        void changeMenu(StateApplication stateApplication);
     }
 
 }

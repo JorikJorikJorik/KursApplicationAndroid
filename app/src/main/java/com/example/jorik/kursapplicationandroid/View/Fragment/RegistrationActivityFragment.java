@@ -1,30 +1,33 @@
 package com.example.jorik.kursapplicationandroid.View.Fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.databinding.tool.DataBinder;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.text.method.PasswordTransformationMethod;
 import android.text.method.TransformationMethod;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
+import com.example.jorik.kursapplicationandroid.Model.Enum.StateApplication;
 import com.example.jorik.kursapplicationandroid.R;
 import com.example.jorik.kursapplicationandroid.ViewModel.RegistrationViewModel;
 import com.example.jorik.kursapplicationandroid.databinding.FragmentRegistrationBinding;
 
-import retrofit.http.Body;
-
 /**
  * A placeholder fragment containing a simple view.
  */
-public class RegistrationActivityFragment extends Fragment {
+public class RegistrationActivityFragment extends BaseFragment {
 
     private FragmentRegistrationBinding mFragmentRegistrationBinding;
     private RegistrationViewModel mRegistrationViewModel;
+    private MenuChangeCallback callback;
 
     public static RegistrationActivityFragment newInstance() {
         Bundle args = new Bundle();
@@ -42,7 +45,7 @@ public class RegistrationActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view =inflater.inflate(R.layout.fragment_registration, container, false);
+        View view = inflater.inflate(R.layout.fragment_registration, container, false);
 
         mFragmentRegistrationBinding = DataBindingUtil.bind(view);
         mRegistrationViewModel = new RegistrationViewModel(getActivity(), mFragmentRegistrationBinding.driverCheckRegistreation);
@@ -50,7 +53,8 @@ public class RegistrationActivityFragment extends Fragment {
 
         mFragmentRegistrationBinding.registrationFab.setOnClickListener(v -> {
             mRegistrationViewModel.moveToWorkWithApplication();
-            getActivity().finish();
+            if (mRegistrationViewModel.isFinishActivity())
+                getActivity().finish();
         });
 
         mFragmentRegistrationBinding.driverQualificationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -74,8 +78,23 @@ public class RegistrationActivityFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        callback = (MenuChangeCallback) activity;
+        super.onAttach(activity);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.registration_menu_button) {
+            callback.changeMenu(StateApplication.SIGNIN);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onDestroy() {
         mRegistrationViewModel.unsubscribe();
         super.onDestroy();
     }
 }
+

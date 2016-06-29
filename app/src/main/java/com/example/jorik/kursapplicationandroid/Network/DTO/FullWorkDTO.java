@@ -7,10 +7,6 @@ import com.example.jorik.kursapplicationandroid.BR;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by jorik on 01.06.16.
- */
-
 public class FullWorkDTO extends BaseObservable{
 
     @SerializedName("WorkList")

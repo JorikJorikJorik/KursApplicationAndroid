@@ -131,8 +131,7 @@ public class GasViewModel extends BaseObservable {
         if (mListFullGasDTO != null) {
             mListFullGasDTO.clear();
         }
-        //TODO:смени айдишник на общий
-        Observable<List<FullGasDTO>> fullGasDTOObservable = getRightsGas() == Rights.WATCH ? mGasService.getAllFullGasList() : mGasService.getAllFullGasListForUser( ApplicationDataBase.getInstance().getSelectDataBase().getNumberDriver());
+        Observable<List<FullGasDTO>> fullGasDTOObservable = getRightsGas() == Rights.WATCH ? mGasService.getAllFullGasList() : mGasService.getAllFullGasListForUser(ApplicationDataBase.getInstance().getSelectDataBase().getNumberDriver());
         mSubscriptionGetAllFullGas = fullGasDTOObservable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

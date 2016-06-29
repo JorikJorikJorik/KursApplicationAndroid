@@ -195,7 +195,6 @@ public class CreateGasViewModel extends BaseViewModel {
         enableSendButton();
     }
 
-    //TODO: смени id
     public void sendRequestByCreate(){
         if(mFragment instanceof CreateGasDataActivityFragment)
             mCallback = (ResponseCallback) mFragment;

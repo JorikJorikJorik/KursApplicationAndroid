@@ -3,23 +3,32 @@ package com.example.jorik.kursapplicationandroid.ViewModel;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.Bindable;
+import android.util.Log;
 import android.widget.CheckedTextView;
 import android.widget.Toast;
 
-import com.activeandroid.query.Select;
 import com.example.jorik.kursapplicationandroid.BR;
 import com.example.jorik.kursapplicationandroid.DataBase.ApplicationDataBase;
-import com.example.jorik.kursapplicationandroid.Model.Enum.Rights;
 import com.example.jorik.kursapplicationandroid.Model.Enum.Role;
 import com.example.jorik.kursapplicationandroid.Model.Enum.StateApplication;
 import com.example.jorik.kursapplicationandroid.Model.POJO.RegistrationModel;
 import com.example.jorik.kursapplicationandroid.Model.POJO.RegistrationModelView;
+import com.example.jorik.kursapplicationandroid.Network.DTO.AccountDTO;
+import com.example.jorik.kursapplicationandroid.Network.DTO.AccountDispatcherDTO;
+import com.example.jorik.kursapplicationandroid.Network.DTO.AccountDriverDTO;
+import com.example.jorik.kursapplicationandroid.Network.DTO.DriverDTO;
+import com.example.jorik.kursapplicationandroid.Network.RestClient;
+import com.example.jorik.kursapplicationandroid.Network.ServiceInterface.AccountService;
 import com.example.jorik.kursapplicationandroid.R;
 import com.example.jorik.kursapplicationandroid.View.Activity.MainActivity;
 
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by jorik on 05.06.16.
@@ -54,6 +63,8 @@ public class RegistrationViewModel extends BaseViewModel {
     private Subscription mSubscriptionExperience;
     private Subscription mSubscriptionSalary;
     private Subscription mSubscriptionEnable;
+    private Subscription mSubscriptionAccountDriver;
+    private Subscription mSubscriptionAccountDispatcher;
 
     private CheckedTextView mCheckedTextView;
 
@@ -193,6 +204,14 @@ public class RegistrationViewModel extends BaseViewModel {
         return visibleDriverFields;
     }
 
+    public boolean isFinishActivity() {
+        return mRegistrationModel.isFinishActivity();
+    }
+
+    public void setFinishActivity(boolean finishActivity) {
+        mRegistrationModel.setFinishActivity(finishActivity);
+    }
+
     public void setVisibleDriverFields(boolean visibleDriverFields) {
         this.visibleDriverFields = visibleDriverFields;
         notifyPropertyChanged(BR.visibleDriverFields);
@@ -216,7 +235,6 @@ public class RegistrationViewModel extends BaseViewModel {
 
             @Override
             public void onError(Throwable e) {
-
 
             }
 
@@ -367,44 +385,121 @@ public class RegistrationViewModel extends BaseViewModel {
         Observable<Boolean> enableSend = null;
 
         if (mCheckedTextView.isChecked()) {
-                enableSend = Observable.combineLatest(isName, isPassword, isConfirmPassword, passwordValidation, isExperience, isSalary,
-                        (name, pass, confirmPass, passValid, experience, salary) -> name && pass && confirmPass && passValid && experience && salary);
+            enableSend = Observable.combineLatest(isName, isPassword, isConfirmPassword, passwordValidation, isExperience, isSalary,
+                    (name, pass, confirmPass, passValid, experience, salary) -> name && pass && confirmPass && passValid && experience && salary);
         } else {
             enableSend = Observable.combineLatest(isName, isPassword, isConfirmPassword, passwordValidation,
                     (name, pass, confirmPass, passValid) -> name && pass && confirmPass && passValid);
         }
 
-            mSubscriptionEnable = enableSend.subscribe(new Subscriber<Boolean>() {
-                @Override
-                public void onCompleted() {
+        mSubscriptionEnable = enableSend.subscribe(new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
 
-                }
+            }
 
-                @Override
-                public void onError(Throwable e) {
-                    setEnableRegistrationButton(false);
-                }
+            @Override
+            public void onError(Throwable e) {
+                setEnableRegistrationButton(false);
+            }
 
-                @Override
-                public void onNext(Boolean aBoolean) {
-                    setEnableRegistrationButton(aBoolean);
-                }
-            });
-            equalsPassword();
-
-
+            @Override
+            public void onNext(Boolean aBoolean) {
+                setEnableRegistrationButton(aBoolean);
+            }
+        });
+        equalsPassword();
     }
 
     public void moveToWorkWithApplication() {
-        writeInDataBaseAndMove();
+        if (!mCheckedTextView.isChecked()) {
+            createAccountDispatcher();
+        } else createAccountDriver();
     }
 
-    private void writeInDataBaseAndMove(){
+    private AccountDTO createAccountDTO() {
+        AccountDTO mAccountDTO = new AccountDTO();
+        mAccountDTO.setSecondname(mRegistrationModel.getName());
+        mAccountDTO.setPassword(mRegistrationModel.getPassword());
+        mAccountDTO.setRole(!mCheckedTextView.isChecked() ? mContext.getString(R.string.dispatcher) : mContext.getString(R.string.driver));
+        return mAccountDTO;
+    }
+
+    private DriverDTO createDriverDTO() {
+        DriverDTO mDriverDTO = new DriverDTO();
+        mDriverDTO.setSecondname(mRegistrationModel.getName());
+        mDriverDTO.setExperience(mRegistrationModel.getExperience());
+        mDriverDTO.setSalary(mRegistrationModel.getSalary());
+        mDriverDTO.setQualification(mRegistrationModel.getQualification());
+        return mDriverDTO;
+    }
+
+    private void createAccountDriver() {
+
+        AccountDriverDTO mAccountDriverDTO = new AccountDriverDTO();
+        mAccountDriverDTO.setAccountDTO(createAccountDTO());
+        mAccountDriverDTO.setDriverDTO(createDriverDTO());
+
+        AccountService accountService = RestClient.getServiceInterface(AccountService.class);
+        Observable<Integer> accountObservable = accountService.createDriverAccount(mAccountDriverDTO);
+        mSubscriptionAccountDriver = accountObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(TAG, e.toString());
+                        Toast.makeText(mContext, e.toString(), Toast.LENGTH_SHORT).show();
+                        mRegistrationModel.setFinishActivity(false);
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+                        resultByResponse(integer, true);
+                    }
+                });
+
+    }
+
+    private void createAccountDispatcher() {
+
+        AccountDispatcherDTO mAccountDispatcherDTO = new AccountDispatcherDTO();
+        mAccountDispatcherDTO.setAccountDTO(createAccountDTO());
+
+        AccountService accountService = RestClient.getServiceInterface(AccountService.class);
+        Observable<Integer> accountObservable = accountService.createDispatcherAccount(mAccountDispatcherDTO);
+        mSubscriptionAccountDispatcher = accountObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(TAG, e.toString());
+                        Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        mRegistrationModel.setFinishActivity(false);
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+                        resultByResponse(integer, false);
+                    }
+                });
+    }
+
+    private void writeInDataBaseAndMove() {
         ApplicationDataBase base = ApplicationDataBase.getInstance().getSelectDataBase();
         base.setName(mRegistrationModel.getName());
         base.setRole(!mCheckedTextView.isChecked() ? Role.ADMIN : Role.DRIVER);
         base.setStateApplication(StateApplication.ENTER);
-        base.setNumberDriver(4);
+        base.setNumberDriver(!mCheckedTextView.isChecked() ? 0 : mRegistrationModel.getNumber());
         base.save();
 
         Intent moveToWork = new Intent(mContext, MainActivity.class);
@@ -415,6 +510,20 @@ public class RegistrationViewModel extends BaseViewModel {
         setVisibleDriverFields(!mCheckedTextView.isChecked());
         mCheckedTextView.setChecked(!mCheckedTextView.isChecked());
         enableSendButton();
+    }
+
+    private void resultByResponse(Integer response, boolean driver) {
+        if (driver) {
+            mRegistrationModel.setNumber(response);
+            response = 200;
+        }
+        if (response.equals(200)) {
+            Toast.makeText(mContext, R.string.account_create, Toast.LENGTH_SHORT).show();
+            writeInDataBaseAndMove();
+            mRegistrationModel.setFinishActivity(true);
+        }
+        else Toast.makeText(mContext, R.string.server_error, Toast.LENGTH_SHORT).show();
+
     }
 
 
@@ -434,6 +543,10 @@ public class RegistrationViewModel extends BaseViewModel {
             mSubscriptionSalary.unsubscribe();
         if (mSubscriptionEnable != null)
             mSubscriptionEnable.unsubscribe();
+        if (mSubscriptionAccountDriver != null)
+            mSubscriptionAccountDriver.unsubscribe();
+        if (mSubscriptionAccountDispatcher != null)
+            mSubscriptionAccountDispatcher.unsubscribe();
 
     }
 

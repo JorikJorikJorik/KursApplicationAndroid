@@ -115,12 +115,12 @@ public class ApplicationDataBase extends Model {
     }
 
     public ApplicationDataBase getSelectDataBase() {
-        return new Select().from(ApplicationDataBase.class).orderBy("RANDOM()").executeSingle();
+        return new Select().from(ApplicationDataBase.class).executeSingle();
     }
 
     public void setDefaultValues() {
         mApplicationDataBase.setName("Default");
-        mApplicationDataBase.setStateApplication(StateApplication.NONE);
+        mApplicationDataBase.setStateApplication(StateApplication.REGISTRATION);
         mApplicationDataBase.setRole(Role.NONE);
         mApplicationDataBase.setStartTime(DEFAULT_START_HOUR);
         mApplicationDataBase.setRepeatTime(DEFAULT_REPEAT_HOUR);

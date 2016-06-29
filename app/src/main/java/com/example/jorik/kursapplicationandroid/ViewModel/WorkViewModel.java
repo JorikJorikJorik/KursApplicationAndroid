@@ -54,7 +54,6 @@ import static com.example.jorik.kursapplicationandroid.View.Fragment.DetailsActi
 public class WorkViewModel extends BaseViewModel implements WorkListAdapter.WorkItemCallback {
 
     public static final String INFO_FOR_BROADCAST = "bus_info_for_broadcast";
-    private static final int TWHO_DAYS = 172800000;
     private static final String TAG = WorkViewModel.class.getSimpleName();
     private static final int OK_RESPONSE = 200;
 
@@ -193,7 +192,7 @@ public class WorkViewModel extends BaseViewModel implements WorkListAdapter.Work
                             onError(new Throwable(mContext.getString(R.string.no_data)));
                         setFullAdapterWork(new WorkListAdapter(mContext, mFullWorkDTOs, WorkViewModel.this));
                         makeStateWork();
-                        makeAlarmManager();
+                        //makeAlarmManager();
                     }
 
                     @Override
@@ -201,7 +200,7 @@ public class WorkViewModel extends BaseViewModel implements WorkListAdapter.Work
                         Log.d(TAG, e.toString());
                         hideProgressAndRefresh(false);
                         setErrorStringWork(e.toString() + mContext.getString(R.string.tap_for_refresh));
-                        makeAlarmManager();
+                        //makeAlarmManager();
                     }
 
                     @Override
@@ -286,7 +285,6 @@ public class WorkViewModel extends BaseViewModel implements WorkListAdapter.Work
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        //TODO :замени id
         for (FullWorkDTO item : mFullWorkDTOs) {
             if (currentDate.equals(item.getWorkDTO().getDateAction()) && item.getDriverDTO().getDriverNumber() ==  ApplicationDataBase.getInstance().getSelectDataBase().getNumberDriver()) {
                 dataBase.setStateWork(StateWork.WORK_TODAY);
@@ -301,7 +299,6 @@ public class WorkViewModel extends BaseViewModel implements WorkListAdapter.Work
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private void makeAlarmManager() {
-        //TODO :замени id
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date currentDate = null;
         try {

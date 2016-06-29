@@ -1,17 +1,18 @@
 package com.example.jorik.kursapplicationandroid.Model.POJO;
 
 /**
- * Created by jorik on 05.06.16.
+ * Created by jorik on 29.06.16.
  */
 
-public class RegistrationModel {
+public class SignInModel {
 
     private String name;
     private String password;
-    private String confirmPassword;
-    private String qualification;
-    private Integer experience;
-    private Integer salary;
+
+    private String errorValidationName;
+    private String errorValidationPassword;
+    private boolean enableSignInButton;
+
     private Integer number;
     private boolean finishActivity;
 
@@ -31,36 +32,28 @@ public class RegistrationModel {
         this.password = password;
     }
 
-    public String getConfirmPassword() {
-        return confirmPassword;
+    public String getErrorValidationName() {
+        return errorValidationName;
     }
 
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
+    public void setErrorValidationName(String errorValidationName) {
+        this.errorValidationName = errorValidationName;
     }
 
-    public String getQualification() {
-        return qualification;
+    public String getErrorValidationPassword() {
+        return errorValidationPassword;
     }
 
-    public void setQualification(String qualification) {
-        this.qualification = qualification;
+    public void setErrorValidationPassword(String errorValidationPassword) {
+        this.errorValidationPassword = errorValidationPassword;
     }
 
-    public Integer getExperience() {
-        return experience;
+    public boolean getEnableSignInButton() {
+        return enableSignInButton;
     }
 
-    public void setExperience(Integer experience) {
-        this.experience = experience;
-    }
-
-    public Integer getSalary() {
-        return salary;
-    }
-
-    public void setSalary(Integer salary) {
-        this.salary = salary;
+    public void setEnableSignInButton(boolean enableSignInButton) {
+        this.enableSignInButton = enableSignInButton;
     }
 
     public Integer getNumber() {
@@ -78,4 +71,6 @@ public class RegistrationModel {
     public void setFinishActivity(boolean finishActivity) {
         this.finishActivity = finishActivity;
     }
+
+
 }

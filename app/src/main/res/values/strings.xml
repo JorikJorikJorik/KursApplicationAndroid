@@ -37,7 +37,7 @@
 
     <string name="title_driver">Driver details</string>
     <string name="title_bus">Bus details</string>
-    <string name="title_activity_registration">Sign in</string>
+    <string name="title_activity_registration">Registration</string>
     <string name="title_activity_data_list">DataListActivity</string>
     <string name="title_activity_details">DetailsActivity</string>
     <string name="title_activity_create_data">CreateBusDataActivity</string>
@@ -181,6 +181,10 @@
     <string name="pref_header_data_sync">Data &amp; sync</string>
 
     <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string name="dispatcher">Dispatcher</string>
+    <string name="server_error">Server error</string>
+    <string name="account_create">Congratulations to the user was created successfully!</string>
+    <string name="incorrect_data">Incorrect enter data</string>
     <string-array name="pref_sync_frequency_titles">
         <item>15 minutes</item>
         <item>30 minutes</item>

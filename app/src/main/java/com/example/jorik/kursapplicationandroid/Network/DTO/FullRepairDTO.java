@@ -7,9 +7,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.example.jorik.kursapplicationandroid.BR;
 
-/**
- * Created by jorik on 01.06.16.
- */
 
 public class FullRepairDTO extends BaseObservable{
 
