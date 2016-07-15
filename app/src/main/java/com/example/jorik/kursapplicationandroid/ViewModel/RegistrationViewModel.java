@@ -19,7 +19,6 @@ import com.example.jorik.kursapplicationandroid.Network.DTO.AccountDriverDTO;
 import com.example.jorik.kursapplicationandroid.Network.DTO.DriverDTO;
 import com.example.jorik.kursapplicationandroid.Network.RestClient;
 import com.example.jorik.kursapplicationandroid.Network.ServiceInterface.AccountService;
-import com.example.jorik.kursapplicationandroid.Notification.FireBaseInstanceIDService;
 import com.example.jorik.kursapplicationandroid.R;
 import com.example.jorik.kursapplicationandroid.View.Activity.MainActivity;
 import com.google.firebase.iid.FirebaseInstanceId;
