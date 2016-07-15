@@ -18,6 +18,7 @@ import com.example.jorik.kursapplicationandroid.Network.ServiceInterface.Account
 import com.example.jorik.kursapplicationandroid.R;
 import com.example.jorik.kursapplicationandroid.View.Activity.MainActivity;
 import com.example.jorik.kursapplicationandroid.BR;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -215,6 +216,7 @@ public class SignInViewModel extends BaseViewModel {
         AccountDTO mAccountDTO = new AccountDTO();
         mAccountDTO.setSecondname(mSignInModel.getName());
         mAccountDTO.setPassword(mSignInModel.getPassword());
+        mAccountDTO.setToken(FirebaseInstanceId.getInstance().getToken());
 
         AccountService accountService = RestClient.getServiceInterface(AccountService.class);
         Observable<ArrayList<String>> accountObservable = accountService.createSignIn(mAccountDTO);

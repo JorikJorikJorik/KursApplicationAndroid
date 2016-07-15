@@ -37,7 +37,7 @@ public class NotificationDriverAboutWork extends BroadcastReceiver {
                 builder.setSmallIcon(R.mipmap.work)
                         .setContentTitle("Today you work!")
                         .setContentText(info)
-                        .setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.audio))
+                        .setSound(Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.battle))
                         .setAutoCancel(true);
 
         Intent workList = new Intent(context, MainActivity.class);

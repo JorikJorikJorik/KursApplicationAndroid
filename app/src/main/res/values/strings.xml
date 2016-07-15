@@ -185,6 +185,7 @@
     <string name="server_error">Server error</string>
     <string name="account_create">Congratulations to the user was created successfully!</string>
     <string name="incorrect_data">Incorrect enter data</string>
+    <string name="default_value_string">Default</string>
     <string-array name="pref_sync_frequency_titles">
         <item>15 minutes</item>
         <item>30 minutes</item>

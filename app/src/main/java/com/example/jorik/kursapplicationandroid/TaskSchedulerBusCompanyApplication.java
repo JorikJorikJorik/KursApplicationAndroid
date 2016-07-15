@@ -36,8 +36,9 @@ public class TaskSchedulerBusCompanyApplication extends Application {
     }
 
     public void initDataBase(){
-        setApplicationDataBase(ApplicationDataBase.getInstance());
-        ApplicationDataBase dataBase = ApplicationDataBase.getInstance().getSelectDataBase();
+        ApplicationDataBase applicationDataBase = ApplicationDataBase.getInstance();
+        setApplicationDataBase(applicationDataBase);
+        ApplicationDataBase dataBase = applicationDataBase.getSelectDataBase();
         if(dataBase == null) getApplicationDataBase().setDefaultValues();
     }
 }

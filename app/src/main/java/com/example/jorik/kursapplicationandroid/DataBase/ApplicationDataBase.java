@@ -1,5 +1,7 @@
 package com.example.jorik.kursapplicationandroid.DataBase;
 
+import android.content.Context;
+
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
@@ -7,6 +9,7 @@ import com.activeandroid.query.Select;
 import com.example.jorik.kursapplicationandroid.Model.Enum.Role;
 import com.example.jorik.kursapplicationandroid.Model.Enum.StateApplication;
 import com.example.jorik.kursapplicationandroid.Model.Enum.StateWork;
+import com.example.jorik.kursapplicationandroid.R;
 
 
 @Table(name = "ApplicationDataBase")
@@ -40,6 +43,9 @@ public class ApplicationDataBase extends Model {
 
     @Column(name = "DateManager")
     public long dateManager;
+
+    @Column(name = "Token")
+    public String token;
 
     public ApplicationDataBase() {
     }
@@ -114,12 +120,20 @@ public class ApplicationDataBase extends Model {
         this.dateManager = dateManager;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     public ApplicationDataBase getSelectDataBase() {
         return new Select().from(ApplicationDataBase.class).executeSingle();
     }
 
     public void setDefaultValues() {
-        mApplicationDataBase.setName("Default");
+        mApplicationDataBase.setName("Default"/*context.getResources().getString(R.string.default_value_string)*/);
         mApplicationDataBase.setStateApplication(StateApplication.REGISTRATION);
         mApplicationDataBase.setRole(Role.NONE);
         mApplicationDataBase.setStartTime(DEFAULT_START_HOUR);
@@ -127,9 +141,9 @@ public class ApplicationDataBase extends Model {
         mApplicationDataBase.setStateWork(StateWork.NONE);
         mApplicationDataBase.setDateManager(0);
         mApplicationDataBase.setNumberDriver(0);
+        mApplicationDataBase.setToken("Default"/*context.getResources().getString(R.string.default_value_string)*/);
         mApplicationDataBase.save();
     }
-
 
 
 }

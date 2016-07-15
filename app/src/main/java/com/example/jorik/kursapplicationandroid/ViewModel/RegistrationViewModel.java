@@ -19,8 +19,10 @@ import com.example.jorik.kursapplicationandroid.Network.DTO.AccountDriverDTO;
 import com.example.jorik.kursapplicationandroid.Network.DTO.DriverDTO;
 import com.example.jorik.kursapplicationandroid.Network.RestClient;
 import com.example.jorik.kursapplicationandroid.Network.ServiceInterface.AccountService;
+import com.example.jorik.kursapplicationandroid.Notification.FireBaseInstanceIDService;
 import com.example.jorik.kursapplicationandroid.R;
 import com.example.jorik.kursapplicationandroid.View.Activity.MainActivity;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -421,6 +423,7 @@ public class RegistrationViewModel extends BaseViewModel {
         AccountDTO mAccountDTO = new AccountDTO();
         mAccountDTO.setSecondname(mRegistrationModel.getName());
         mAccountDTO.setPassword(mRegistrationModel.getPassword());
+        mAccountDTO.setToken(FirebaseInstanceId.getInstance().getToken());
         mAccountDTO.setRole(!mCheckedTextView.isChecked() ? mContext.getString(R.string.dispatcher) : mContext.getString(R.string.driver));
         return mAccountDTO;
     }

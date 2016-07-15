@@ -17,6 +17,10 @@ public class AccountDTO {
     @Expose
     public String role;
 
+    @SerializedName("Token")
+    @Expose
+    public String token;
+
     public String getSecondname() {
         return secondname;
     }
@@ -39,5 +43,13 @@ public class AccountDTO {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
