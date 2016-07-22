@@ -6,6 +6,7 @@
     <data>
 
         <import type="com.example.jorik.kursapplicationandroid.Model.Enum.Rights"/>
+
         <import type="android.view.View"/>
 
         <variable
@@ -31,8 +32,8 @@
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/gas_recycler"
-                android:layout_width="380dp"
-                android:layout_height="573dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:visibility="@{gasViewModel.completeRequestGas ? View.VISIBLE : View.INVISIBLE}"
                 app:adapter='@{gasViewModel.fullGasAdapter}'>
 
@@ -42,14 +43,13 @@
 
         <TextView
             android:id="@+id/error_text"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/button"
-            android:layout_centerVertical="true"
             android:layout_gravity="center"
             android:text="@{gasViewModel.errorStringGas}"
-            android:visibility="@{gasViewModel.completeRequestGas ? View.INVISIBLE : View.VISIBLE}"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:visibility="@{gasViewModel.completeRequestGas ? View.INVISIBLE : View.VISIBLE}"
             app:onClick="@{gasViewModel.getAllDataGas}"/>
 
         <ProgressBar
@@ -71,7 +71,7 @@
             android:layout_margin="@dimen/fab_margin"
             android:src="@android:drawable/ic_input_add"
             android:visibility="@{gasViewModel.visibleFABGas}"
-            app:onClick= "@{gasViewModel.moveToCreateActivity}"/>
+            app:onClick="@{gasViewModel.moveToCreateActivity}"/>
 
     </android.support.design.widget.CoordinatorLayout>
 </layout>

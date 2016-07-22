@@ -15,6 +15,15 @@
     <dimen name="spinner_height">50dp</dimen>
     <dimen name="margin_text">10dp</dimen>
     <dimen name="work_title_size">25sp</dimen>
-    <dimen name="registration_check_margin">5dp</dimen>
+    <dimen name="registration_check_margin">10dp</dimen>
+    <dimen name="header_name_margin">10dp</dimen>
     <dimen name="registration_check_text">20sp</dimen>
+    <dimen name="registration_photo_image">96dp</dimen>
+    <dimen name="header_height_title_image">190dp</dimen>
+    <dimen name="header_image_margin">10dp</dimen>
+    <dimen name="driver_margin_start">8dp</dimen>
+    <dimen name="title_collapse_end">64dp</dimen>
+    <dimen name="title_collapse_start">48dp</dimen>
+    <dimen name="icon_details">32dp</dimen>
+    <dimen name="details_item_text">25sp</dimen>
 </resources>

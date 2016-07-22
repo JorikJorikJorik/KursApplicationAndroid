@@ -6,6 +6,7 @@
     <data>
 
         <import type="com.example.jorik.kursapplicationandroid.Model.Enum.Rights"/>
+
         <import type="android.view.View"/>
 
         <variable
@@ -31,9 +32,9 @@
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/repair_recycler"
-                android:layout_width="380dp"
-                android:layout_height="573dp"
-                android:visibility="@{!repairViewModel.completeRequestRepair ? View.VISIBLE : View.INVISIBLE}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="@{repairViewModel.completeRequestRepair ? View.VISIBLE : View.INVISIBLE}"
                 app:adapter='@{repairViewModel.repairAdapter}'>
 
             </android.support.v7.widget.RecyclerView>
@@ -42,14 +43,12 @@
 
         <TextView
             android:id="@+id/error_text"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/button"
-            android:layout_centerVertical="true"
             android:layout_gravity="center"
             android:text="@{repairViewModel.errorStringRepair}"
-            android:visibility="@{repairViewModel.completeRequestRepair ? View.INVISIBLE : View.VISIBLE}"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:visibility="@{repairViewModel.completeRequestRepair ? View.INVISIBLE : View.VISIBLE}"
             app:onClick="@{repairViewModel.getAllDataRepair}"/>
 
         <ProgressBar
@@ -71,7 +70,7 @@
             android:layout_margin="@dimen/fab_margin"
             android:src="@android:drawable/ic_input_add"
             android:visibility="@{repairViewModel.visibleFABRepair}"
-            app:onClick= "@{repairViewModel.moveToCreateActivity}"/>
+            app:onClick="@{repairViewModel.moveToCreateActivity}"/>
 
     </android.support.design.widget.CoordinatorLayout>
 </layout>

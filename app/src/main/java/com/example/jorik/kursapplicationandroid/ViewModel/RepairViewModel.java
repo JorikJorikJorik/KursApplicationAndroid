@@ -12,18 +12,16 @@ import android.widget.Toast;
 
 import com.example.jorik.kursapplicationandroid.BR;
 import com.example.jorik.kursapplicationandroid.DataBase.ApplicationDataBase;
+import com.example.jorik.kursapplicationandroid.Model.Enum.ResponseData;
 import com.example.jorik.kursapplicationandroid.Model.Enum.Rights;
 import com.example.jorik.kursapplicationandroid.Model.Enum.StateWork;
 import com.example.jorik.kursapplicationandroid.Model.POJO.RepairModel;
 import com.example.jorik.kursapplicationandroid.Network.DTO.FullRepairDTO;
-import com.example.jorik.kursapplicationandroid.Network.DTO.RepairDTO;
 import com.example.jorik.kursapplicationandroid.Network.RestClient;
 import com.example.jorik.kursapplicationandroid.Network.ServiceInterface.RepairService;
 import com.example.jorik.kursapplicationandroid.R;
-import com.example.jorik.kursapplicationandroid.View.Activity.Create.CreateBusDataActivity;
 import com.example.jorik.kursapplicationandroid.View.Activity.Create.CreateRepairDataActivity;
 import com.example.jorik.kursapplicationandroid.View.Adapter.RepairAdapter;
-import com.example.jorik.kursapplicationandroid.ViewModel.Create.CreateRepairViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +49,7 @@ public class RepairViewModel extends BaseViewModel {
     private Subscription mSubscriptionGetAllRepair;
     private Subscription mSubscriptionDeleteRepair;
 
+    private ResponseData mResponseData;
     private RepairModel mRepairModel;
     private SwipeRefreshLayout mSwipeRefresh;
 
@@ -60,7 +59,7 @@ public class RepairViewModel extends BaseViewModel {
         mRepairModel = new RepairModel();
         listRepairDTO = new ArrayList<>();
         mRepairService = RestClient.getServiceInterface(RepairService.class);
-        setVisibleFABRepair(View.INVISIBLE);
+        setVisibleFABRepair(View.GONE);
         setRightsRepair(rights);
 
     }
@@ -122,11 +121,13 @@ public class RepairViewModel extends BaseViewModel {
 
     public void setCompleteRequestRepair(boolean completeRequest) {
         mRepairModel.setCompleteRequest(completeRequest);
-        notifyPropertyChanged(BR.completeRequestDriver);
+        notifyPropertyChanged(BR.completeRequestRepair);
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public void getAllDataRepair() {
+
+        mResponseData = ResponseData.ERROR;
 
         if (!mSwipeRefresh.isRefreshing()) {
             setVisibleProgressRepair(true);
@@ -135,7 +136,7 @@ public class RepairViewModel extends BaseViewModel {
             listRepairDTO.clear();
         }
 
-        Observable<List<FullRepairDTO>> repairDTOObservable = getRightsRepair() == Rights.WATCH ? mRepairService.getAllFullRepairList() : mRepairService.getAllFullRepairListForUser(ApplicationDataBase.getInstance().getSelectDataBase().getNumberDriver());
+        Observable<List<FullRepairDTO>> repairDTOObservable = getRightsRepair() == Rights.WATCH ? mRepairService.getAllFullRepairList() : mRepairService.getAllFullRepairListForUser(ApplicationDataBase.getInstance().getSelectDataBase().getNumberUser());
         mSubscriptionGetAllRepair = repairDTOObservable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -145,17 +146,19 @@ public class RepairViewModel extends BaseViewModel {
                 .subscribe(new Subscriber<FullRepairDTO>() {
                     @Override
                     public void onCompleted() {
-                        hideProgressAndRefresh(true);
-                        if (listRepairDTO.size() == 0)
+                        mResponseData = ResponseData.DATA;
+                        hideProgressAndRefresh(mResponseData);
+                        if (listRepairDTO.size() == 0) {
+                            mResponseData = ResponseData.EMPTY;
                             onError(new Throwable(mContext.getString(R.string.no_data)));
+                        }
                         setRepairAdapter(new RepairAdapter(mContext, listRepairDTO));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(TAG, e.toString());
-                        hideProgressAndRefresh(false);
-                        setErrorStringRepair(e.toString() + mContext.getString(R.string.tap_for_refresh));
+                        errorAction(e);
                     }
 
                     @Override
@@ -175,12 +178,18 @@ public class RepairViewModel extends BaseViewModel {
                 .subscribe(new Subscriber<Integer>() {
                     @Override
                     public void onCompleted() {
-
+                        if (listRepairDTO.size() == 0) {
+                            mResponseData = ResponseData.EMPTY;
+                            onError(new Throwable(mContext.getString(R.string.no_data)));
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(TAG, e.toString());
+                        if(mResponseData == ResponseData.EMPTY) {
+                            errorAction(e);
+                        }
                         deleteToast(e.toString());
                     }
 
@@ -203,15 +212,22 @@ public class RepairViewModel extends BaseViewModel {
         Toast.makeText(mContext, response, Toast.LENGTH_SHORT).show();
     }
 
-    private void hideProgressAndRefresh(boolean completed) {
+    private void hideProgressAndRefresh(ResponseData mResponseData) {
+
+        boolean completed = mResponseData.equals(ResponseData.DATA) || mResponseData.equals(ResponseData.EMPTY);
+
         ApplicationDataBase base = ApplicationDataBase.getInstance().getSelectDataBase();
         if (mSwipeRefresh.isRefreshing()) {
             mSwipeRefresh.setRefreshing(false);
         }
         setVisibleProgressRepair(false);
-        setCompleteRequestRepair(completed);
+        setCompleteRequestRepair(mResponseData.equals(ResponseData.DATA));
+        setVisibleFABRepair(completed ? getRightsRepair() == Rights.CHANGE ? base.getStateWork() == StateWork.WORK_TODAY ? View.VISIBLE : View.INVISIBLE : View.INVISIBLE : View.INVISIBLE);
+    }
 
-        setVisibleFABRepair(completed ? getRightsRepair() ==  Rights.CHANGE ? base.getStateWork() == StateWork.WORK_TODAY ? View.VISIBLE : View.INVISIBLE : View.INVISIBLE : View.VISIBLE);
+    private void errorAction(Throwable e){
+        hideProgressAndRefresh(mResponseData);
+        setErrorStringRepair(e.toString() + mContext.getString(R.string.tap_for_refresh));
     }
 
     public void moveToCreateActivity() {

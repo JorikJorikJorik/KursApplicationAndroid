@@ -37,7 +37,7 @@ public class DriverAdapter extends RecyclerView.Adapter<DriverAdapter.DriverView
     private NextStepDriverByCreateWorkCallback mCallback;
     private CreateWorkViewModel mCreateWorkViewModel;
 
-    public  DriverAdapter(Context mContext, List<DriverDTO> list, ConditionClickItemAdapter conditionClickItemAdapter){
+    public DriverAdapter(Context mContext, List<DriverDTO> list, ConditionClickItemAdapter conditionClickItemAdapter){
         this.mContext = mContext;
         mDriverDTOs = list;
         mConditionClickItemAdapter = conditionClickItemAdapter;

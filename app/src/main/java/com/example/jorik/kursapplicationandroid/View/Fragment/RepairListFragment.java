@@ -64,6 +64,8 @@ public class RepairListFragment extends BaseFragment {
         mFragmentRepairListBinding.repairRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         mFragmentRepairListBinding.refreshRepairList.setColorSchemeColors(Color.BLUE);
 
+        mFragmentRepairListBinding.repairAddFab.setVisibility(View.GONE);
+
         simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
             @Override

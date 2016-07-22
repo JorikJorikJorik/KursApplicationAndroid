@@ -59,11 +59,11 @@ public class GasListFragment extends BaseFragment {
         mFragmentGasListBinding = DataBindingUtil.bind(view);
 
         mGasItemViewModel = new GasViewModel(getActivity(), mFragmentGasListBinding.refreshGasList, mRights);
-
         mFragmentGasListBinding.setGasViewModel(mGasItemViewModel);
         mFragmentGasListBinding.gasRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
         mFragmentGasListBinding.refreshGasList.setColorSchemeColors(Color.BLUE);
 
+        mFragmentGasListBinding.gasAddFab.setVisibility(View.GONE);
 
         simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 

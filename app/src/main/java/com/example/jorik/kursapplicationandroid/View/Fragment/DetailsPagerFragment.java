@@ -31,20 +31,23 @@ public class DetailsPagerFragment extends BaseFragment {
     private static final String ARGUMENTS_NUMBER_PAGES = "position_pages";
     private static final String ARGUMENTS_KIND_ENUM_PAGES = "kind_pages";
     private static final String ARGUMENTS_CHOOSE_ID = "choose_id";
+    private static final String ARGUMENTS_VIEW_MODEL = "view_model";
 
     private FragmentDetailsPagerBinding mFragmentDetailsPagerBinding;
     private DetailsPagerViewModel mDetailsPagerViewModel;
     private KindDataBase mKindDataBase;
     private int position;
     private int chooseId;
+    private DetailsViewModel detailsViewModel;
 
-    public static Fragment newInstance(KindDataBase mKindDataBase, int position, int chooseId) {
+    public static Fragment newInstance(KindDataBase mKindDataBase, int position, int chooseId, DetailsViewModel detailsViewModel) {
 
         DetailsPagerFragment fragment = new DetailsPagerFragment();
         Bundle args = new Bundle();
         args.putInt(ARGUMENTS_NUMBER_PAGES, position);
         args.putInt(ARGUMENTS_KIND_ENUM_PAGES, mKindDataBase.getValue());
         args.putInt(ARGUMENTS_CHOOSE_ID, chooseId);
+        args.putParcelable(ARGUMENTS_VIEW_MODEL, detailsViewModel);
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,6 +58,7 @@ public class DetailsPagerFragment extends BaseFragment {
         chooseId = getArguments().getInt(ARGUMENTS_CHOOSE_ID);
         position = getArguments().getInt(ARGUMENTS_NUMBER_PAGES);
         mKindDataBase = KindDataBase.fromValue(getArguments().getInt(ARGUMENTS_KIND_ENUM_PAGES));
+        detailsViewModel = getArguments().getParcelable(ARGUMENTS_VIEW_MODEL);
     }
 
     @Nullable
@@ -63,7 +67,7 @@ public class DetailsPagerFragment extends BaseFragment {
 
         View view = inflater.inflate(R.layout.fragment_details_pager, container, false);
 
-        mDetailsPagerViewModel = new DetailsPagerViewModel(getActivity(), mKindDataBase, position);
+        mDetailsPagerViewModel = new DetailsPagerViewModel(getActivity(), mKindDataBase, position, detailsViewModel);
 
         mFragmentDetailsPagerBinding  = DataBindingUtil.bind(view);
         mFragmentDetailsPagerBinding.setPager(mDetailsPagerViewModel);

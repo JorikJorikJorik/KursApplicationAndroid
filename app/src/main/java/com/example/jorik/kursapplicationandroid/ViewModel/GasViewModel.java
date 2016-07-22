@@ -13,10 +13,11 @@ import android.widget.Toast;
 
 import com.example.jorik.kursapplicationandroid.BR;
 import com.example.jorik.kursapplicationandroid.DataBase.ApplicationDataBase;
+import com.example.jorik.kursapplicationandroid.Model.Enum.ResponseData;
 import com.example.jorik.kursapplicationandroid.Model.Enum.Rights;
 import com.example.jorik.kursapplicationandroid.Model.Enum.StateWork;
-import com.example.jorik.kursapplicationandroid.Network.DTO.FullGasDTO;
 import com.example.jorik.kursapplicationandroid.Model.POJO.GasModel;
+import com.example.jorik.kursapplicationandroid.Network.DTO.FullGasDTO;
 import com.example.jorik.kursapplicationandroid.Network.RestClient;
 import com.example.jorik.kursapplicationandroid.Network.ServiceInterface.GasService;
 import com.example.jorik.kursapplicationandroid.R;
@@ -48,6 +49,7 @@ public class GasViewModel extends BaseObservable {
     private Subscription mSubscriptionGetAllFullGas;
     private Subscription mSubscriptionDeleteFullGas;
 
+    private ResponseData mResponseData;
     private GasModel mGasModel;
     private SwipeRefreshLayout mSwipeRefresh;
 
@@ -125,13 +127,15 @@ public class GasViewModel extends BaseObservable {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public void getAllDataGas() {
 
+        mResponseData = ResponseData.ERROR;
+
         if (!mSwipeRefresh.isRefreshing()) {
             setVisibleProgressGas(true);
         }
         if (mListFullGasDTO != null) {
             mListFullGasDTO.clear();
         }
-        Observable<List<FullGasDTO>> fullGasDTOObservable = getRightsGas() == Rights.WATCH ? mGasService.getAllFullGasList() : mGasService.getAllFullGasListForUser(ApplicationDataBase.getInstance().getSelectDataBase().getNumberDriver());
+        Observable<List<FullGasDTO>> fullGasDTOObservable = getRightsGas() == Rights.WATCH ? mGasService.getAllFullGasList() : mGasService.getAllFullGasListForUser(ApplicationDataBase.getInstance().getSelectDataBase().getNumberUser());
         mSubscriptionGetAllFullGas = fullGasDTOObservable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -141,16 +145,19 @@ public class GasViewModel extends BaseObservable {
                 .subscribe(new Subscriber<FullGasDTO>() {
                     @Override
                     public void onCompleted() {
-                        hideProgressAndRefresh(true);
-                        if(mListFullGasDTO.size() == 0) onError(new Throwable(mContext.getString(R.string.no_data)));
+                        mResponseData = ResponseData.DATA;
+                        hideProgressAndRefresh(mResponseData);
+                        if (mListFullGasDTO.size() == 0) {
+                            mResponseData = ResponseData.EMPTY;
+                            onError(new Throwable(mContext.getString(R.string.no_data)));
+                        }
                         setFullGasAdapter(new FullGasAdapter(mContext, mListFullGasDTO));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(TAG, e.toString());
-                        hideProgressAndRefresh(false);
-                        setErrorStringGas(e.toString() + mContext.getString(R.string.tap_for_refresh));
+                        errorAction(e);
                     }
 
                     @Override
@@ -163,20 +170,25 @@ public class GasViewModel extends BaseObservable {
     }
 
     public void deleteGas(int id) {
-int i = mListFullGasDTO.get(id).getGasDTO().getGasListId();
-        Observable<Integer> responseGasObservable = mGasService.deleteGasList(i);
+        Observable<Integer> responseGasObservable = mGasService.deleteGasList(mListFullGasDTO.get(id).getGasDTO().getGasListId());
         mSubscriptionDeleteFullGas = responseGasObservable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Integer>() {
                     @Override
                     public void onCompleted() {
-
+                        if (mListFullGasDTO.size() == 0) {
+                            mResponseData = ResponseData.EMPTY;
+                            onError(new Throwable(mContext.getString(R.string.no_data)));
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(TAG, e.toString());
+                        if(mResponseData == ResponseData.EMPTY) {
+                            errorAction(e);
+                        }
                         deleteToast(e.toString());
                     }
 
@@ -199,14 +211,22 @@ int i = mListFullGasDTO.get(id).getGasDTO().getGasListId();
         Toast.makeText(mContext, response, Toast.LENGTH_SHORT).show();
     }
 
-    private void hideProgressAndRefresh(boolean completed) {
+    private void hideProgressAndRefresh(ResponseData mResponseData) {
+
+        boolean completed = mResponseData.equals(ResponseData.DATA) || mResponseData.equals(ResponseData.EMPTY);
+
         ApplicationDataBase base = ApplicationDataBase.getInstance().getSelectDataBase();
         if (mSwipeRefresh.isRefreshing()) {
             mSwipeRefresh.setRefreshing(false);
         }
         setVisibleProgressGas(false);
-        setCompleteRequestGas(completed);
-        setVisibleFABGas(completed ? getRightsGas() == Rights.CHANGE ? base.getStateWork() == StateWork.WORK_TODAY ? View.VISIBLE : View.INVISIBLE : View.INVISIBLE : View.VISIBLE);
+        setCompleteRequestGas(mResponseData.equals(ResponseData.DATA));
+        setVisibleFABGas(completed ? getRightsGas() == Rights.CHANGE ? base.getStateWork() == StateWork.WORK_TODAY ? View.VISIBLE : View.INVISIBLE : View.INVISIBLE : View.INVISIBLE);
+    }
+
+    private void errorAction(Throwable e){
+        hideProgressAndRefresh(mResponseData);
+        setErrorStringGas(e.toString() + mContext.getString(R.string.tap_for_refresh));
     }
 
     public void moveToCreateActivity() {

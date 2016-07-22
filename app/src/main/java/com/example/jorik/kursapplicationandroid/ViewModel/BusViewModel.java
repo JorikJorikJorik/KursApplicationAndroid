@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.jorik.kursapplicationandroid.BR;
 import com.example.jorik.kursapplicationandroid.Model.Enum.ConditionClickItemAdapter;
+import com.example.jorik.kursapplicationandroid.Model.Enum.ResponseData;
 import com.example.jorik.kursapplicationandroid.Model.Enum.Rights;
 import com.example.jorik.kursapplicationandroid.Model.POJO.BusModel;
 import com.example.jorik.kursapplicationandroid.Network.DTO.BusDTO;
@@ -42,6 +43,7 @@ public class BusViewModel extends BaseViewModel {
     private Context mContext;
 
     private List<BusDTO> listBusDTO;
+    private ResponseData mResponseData;
 
     private BusService mBusService;
     private Subscription mSubscriptionGetAllBus;
@@ -124,6 +126,8 @@ public class BusViewModel extends BaseViewModel {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public void getAllDataBus() {
 
+        mResponseData = ResponseData.ERROR;
+
         if (!mSwipeRefresh.isRefreshing()) {
             setVisibleProgressBus(true);
         }
@@ -141,17 +145,19 @@ public class BusViewModel extends BaseViewModel {
                 .subscribe(new Subscriber<BusDTO>() {
                     @Override
                     public void onCompleted() {
-                        hideProgressAndRefresh(true);
-                        if (listBusDTO.size() == 0)
+                        mResponseData = ResponseData.DATA;
+                        hideProgressAndRefresh(mResponseData);
+                        if (listBusDTO.size() == 0) {
+                            mResponseData = ResponseData.EMPTY;
                             onError(new Throwable(mContext.getString(R.string.no_data)));
+                        }
                         setBusAdapter(new BusAdapter(mContext, listBusDTO, ConditionClickItemAdapter.LIST));
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(TAG, e.toString());
-                        hideProgressAndRefresh(false);
-                        setErrorStringBus(e.toString() + mContext.getString(R.string.tap_for_refresh));
+                        errorAction(e);
                     }
 
                     @Override
@@ -171,12 +177,18 @@ public class BusViewModel extends BaseViewModel {
                 .subscribe(new Subscriber<Integer>() {
                     @Override
                     public void onCompleted() {
-
+                        if (listBusDTO.size() == 0) {
+                            mResponseData = ResponseData.EMPTY;
+                            onError(new Throwable(mContext.getString(R.string.no_data)));
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(TAG, e.toString());
+                        if(mResponseData == ResponseData.EMPTY) {
+                            errorAction(e);
+                        }
                         deleteToast(e.toString());
                     }
 
@@ -199,13 +211,21 @@ public class BusViewModel extends BaseViewModel {
         Toast.makeText(mContext, response, Toast.LENGTH_SHORT).show();
     }
 
-    private void hideProgressAndRefresh(boolean completed) {
+    private void hideProgressAndRefresh(ResponseData mResponseData) {
+
+        boolean completed = mResponseData.equals(ResponseData.DATA) || mResponseData.equals(ResponseData.EMPTY);
+
         if (mSwipeRefresh.isRefreshing()) {
             mSwipeRefresh.setRefreshing(false);
         }
         setVisibleProgressBus(false);
-        setCompleteRequestBus(completed);
+        setCompleteRequestBus(mResponseData.equals(ResponseData.DATA));
         setVisibleFABBus(completed ? getRightsBus() == Rights.CHANGE ? View.VISIBLE : View.INVISIBLE : View.INVISIBLE);
+    }
+
+    private void errorAction(Throwable e){
+        hideProgressAndRefresh(mResponseData);
+        setErrorStringBus(e.toString() + mContext.getString(R.string.tap_for_refresh));
     }
 
     public void moveToCreateActivity() {

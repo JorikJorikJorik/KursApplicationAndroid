@@ -82,9 +82,8 @@ public class CreateRepairViewModel extends BaseViewModel {
         }
         mRepairDTO.setBusId(null);
 
-
         RepairService repairService = RestClient.getServiceInterface(RepairService.class);
-        Observable<Integer> requestObservable = repairService.createRepairList(mRepairDTO,  ApplicationDataBase.getInstance().getSelectDataBase().getNumberDriver());
+        Observable<Integer> requestObservable = repairService.createRepairList(mRepairDTO,  ApplicationDataBase.getInstance().getSelectDataBase().getNumberUser());
         mSubscriptionRequest = requestObservable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

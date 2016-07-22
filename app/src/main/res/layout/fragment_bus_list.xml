@@ -42,10 +42,8 @@
 
         <TextView
             android:id="@+id/error_text"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/button"
-            android:layout_centerVertical="true"
             android:layout_gravity="center"
             android:text="@{busViewModel.errorStringBus}"
             android:visibility="@{busViewModel.completeRequestBus ? View.INVISIBLE : View.VISIBLE}"

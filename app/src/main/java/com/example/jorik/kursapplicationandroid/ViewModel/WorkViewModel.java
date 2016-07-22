@@ -17,6 +17,7 @@ import com.example.jorik.kursapplicationandroid.BR;
 import com.example.jorik.kursapplicationandroid.BrodcastReciver.NotificationDriverAboutWork;
 import com.example.jorik.kursapplicationandroid.DataBase.ApplicationDataBase;
 import com.example.jorik.kursapplicationandroid.Model.Enum.KindDataBase;
+import com.example.jorik.kursapplicationandroid.Model.Enum.ResponseData;
 import com.example.jorik.kursapplicationandroid.Model.Enum.Rights;
 import com.example.jorik.kursapplicationandroid.Model.Enum.Role;
 import com.example.jorik.kursapplicationandroid.Model.Enum.StateWork;
@@ -28,7 +29,6 @@ import com.example.jorik.kursapplicationandroid.Network.ServiceInterface.WorkSer
 import com.example.jorik.kursapplicationandroid.R;
 import com.example.jorik.kursapplicationandroid.View.Activity.Create.CreateWorkDataActivity;
 import com.example.jorik.kursapplicationandroid.View.Activity.DetailsActivity;
-import com.example.jorik.kursapplicationandroid.View.Activity.MainActivity;
 import com.example.jorik.kursapplicationandroid.View.Adapter.WorkListAdapter;
 
 import java.text.ParseException;
@@ -62,6 +62,7 @@ public class WorkViewModel extends BaseViewModel implements WorkListAdapter.Work
     private WorkService mWorkService;
     private List<FullWorkDTO> mFullWorkDTOs;
     private BottomSheetBehavior mBottomSheetBehavior;
+    private ResponseData mResponseData;
 
     private Subscription mSubscriptionWorkGet;
     private Subscription mSubscriptionWorkDelete;
@@ -170,6 +171,8 @@ public class WorkViewModel extends BaseViewModel implements WorkListAdapter.Work
     @TargetApi(Build.VERSION_CODES.KITKAT)
     public void getAllDataWork() {
 
+        mResponseData = ResponseData.ERROR;
+
         if (!mSwipeRefresh.isRefreshing()) {
             setVisibleProgressWork(true);
         }
@@ -187,9 +190,14 @@ public class WorkViewModel extends BaseViewModel implements WorkListAdapter.Work
                 .subscribe(new Subscriber<FullWorkDTO>() {
                     @Override
                     public void onCompleted() {
-                        hideProgressAndRefresh(true);
-                        if (mFullWorkDTOs.size() == 0)
+                        mResponseData = ResponseData.DATA;
+                        hideProgressAndRefresh(mResponseData);
+
+                        if (mFullWorkDTOs.size() == 0) {
+                            mResponseData = ResponseData.EMPTY;
                             onError(new Throwable(mContext.getString(R.string.no_data)));
+                        }
+
                         setFullAdapterWork(new WorkListAdapter(mContext, mFullWorkDTOs, WorkViewModel.this));
                         makeStateWork();
                         //makeAlarmManager();
@@ -198,8 +206,7 @@ public class WorkViewModel extends BaseViewModel implements WorkListAdapter.Work
                     @Override
                     public void onError(Throwable e) {
                         Log.d(TAG, e.toString());
-                        hideProgressAndRefresh(false);
-                        setErrorStringWork(e.toString() + mContext.getString(R.string.tap_for_refresh));
+                        errorAction(e);
                         //makeAlarmManager();
                     }
 
@@ -219,12 +226,18 @@ public class WorkViewModel extends BaseViewModel implements WorkListAdapter.Work
                 .subscribe(new Subscriber<Integer>() {
                     @Override
                     public void onCompleted() {
-
+                        if (mFullWorkDTOs.size() == 0) {
+                            mResponseData = ResponseData.EMPTY;
+                            onError(new Throwable(mContext.getString(R.string.no_data)));
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.d(TAG, e.toString());
+                        if(mResponseData == ResponseData.EMPTY) {
+                            errorAction(e);
+                        }
                         deleteToast(e.toString());
                     }
 
@@ -240,13 +253,23 @@ public class WorkViewModel extends BaseViewModel implements WorkListAdapter.Work
         Toast.makeText(mContext, response, Toast.LENGTH_SHORT).show();
     }
 
-    private void hideProgressAndRefresh(boolean completed) {
+    private void hideProgressAndRefresh(ResponseData mResponseData) {
+
+        boolean completed = mResponseData.equals(mResponseData.DATA) || mResponseData.equals(mResponseData.EMPTY);
+
         if (mSwipeRefresh.isRefreshing()) {
             mSwipeRefresh.setRefreshing(false);
         }
+
         setVisibleProgressWork(false);
-        setCompleteRequestWork(completed);
+        setCompleteRequestWork(mResponseData.equals(mResponseData.DATA));
         setVisibleFABWork(completed ? getRightsWork() == Rights.CHANGE ? View.VISIBLE : View.INVISIBLE : View.INVISIBLE);
+    }
+
+
+    private void errorAction(Throwable e){
+        hideProgressAndRefresh(mResponseData);
+        setErrorStringWork(e.toString() + mContext.getString(R.string.tap_for_refresh));
     }
 
     public void moveToCreateActivity() {
@@ -286,7 +309,7 @@ public class WorkViewModel extends BaseViewModel implements WorkListAdapter.Work
             e.printStackTrace();
         }
         for (FullWorkDTO item : mFullWorkDTOs) {
-            if (currentDate.equals(item.getWorkDTO().getDateAction()) && item.getDriverDTO().getDriverNumber() ==  ApplicationDataBase.getInstance().getSelectDataBase().getNumberDriver()) {
+            if (currentDate.equals(item.getWorkDTO().getDateAction()) && item.getDriverDTO().getDriverNumber() == ApplicationDataBase.getInstance().getSelectDataBase().getNumberUser()) {
                 dataBase.setStateWork(StateWork.WORK_TODAY);
                 dataBase.save();
                 break;
@@ -309,21 +332,21 @@ public class WorkViewModel extends BaseViewModel implements WorkListAdapter.Work
         long currentMillisecond = currentDate == null ? Calendar.getInstance().getTime().getTime() : currentDate.getTime();
         ApplicationDataBase base = ApplicationDataBase.getInstance().getSelectDataBase();
 
-            Observable<FullWorkDTO> getDataFinally = Observable.from(mFullWorkDTOs)
-                    .filter(item -> item.getWorkDTO().getDateAction().getTime() >= currentMillisecond && item.getDriverDTO().getDriverNumber() ==  ApplicationDataBase.getInstance().getSelectDataBase().getNumberDriver())
-                    .toSortedList((item1, item2) -> Long.compare(item1.getWorkDTO().getDateAction().getTime(), item2.getWorkDTO().getDateAction().getTime()))
-                    .flatMap(Observable::from)
-                    .filter(item -> item.getWorkDTO().getDateAction().getTime() != base.getDateManager())
-                    .first();
+        Observable<FullWorkDTO> getDataFinally = Observable.from(mFullWorkDTOs)
+                .filter(item -> item.getWorkDTO().getDateAction().getTime() >= currentMillisecond && item.getDriverDTO().getDriverNumber() == ApplicationDataBase.getInstance().getSelectDataBase().getNumberUser())
+                .toSortedList((item1, item2) -> Long.compare(item1.getWorkDTO().getDateAction().getTime(), item2.getWorkDTO().getDateAction().getTime()))
+                .flatMap(Observable::from)
+                .filter(item -> item.getWorkDTO().getDateAction().getTime() != base.getDateManager())
+                .first();
 
-            getDataFinally.subscribe(
-                    item -> {
-                        if (base.getRole() == Role.DRIVER)
-                            createAlarmManager(item.getWorkDTO().getDateAction().getTime(), item.getBusDTO());
-                    },
-                    error -> {
-                    }
-            );
+        getDataFinally.subscribe(
+                item -> {
+                    if (base.getRole() == Role.DRIVER)
+                        createAlarmManager(item.getWorkDTO().getDateAction().getTime(), item.getBusDTO());
+                },
+                error -> {
+                }
+        );
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -343,13 +366,12 @@ public class WorkViewModel extends BaseViewModel implements WorkListAdapter.Work
     }
 
 
-
     public void unsubscribe() {
         if (mSubscriptionWorkGet != null)
             mSubscriptionWorkGet.unsubscribe();
         if (mSubscriptionWorkDelete != null)
             mSubscriptionWorkDelete.unsubscribe();
-        if(mSubscriptionAlarmManager != null)
+        if (mSubscriptionAlarmManager != null)
             mSubscriptionAlarmManager.unsubscribe();
     }
 }

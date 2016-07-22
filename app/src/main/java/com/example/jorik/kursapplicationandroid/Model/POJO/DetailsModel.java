@@ -1,6 +1,9 @@
 package com.example.jorik.kursapplicationandroid.Model.POJO;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 
 import com.example.jorik.kursapplicationandroid.Model.Enum.KindDataBase;
 import com.example.jorik.kursapplicationandroid.R;
@@ -12,10 +15,15 @@ import com.example.jorik.kursapplicationandroid.View.Adapter.DetailsPagerAdapter
 
 public class DetailsModel {
 
+    private Context mContext;
     private KindDataBase mKindDataBase;
     private int countPages;
-    private int titleImage;
+    private String titleImage;
     private String titlePage;
+
+    public DetailsModel(Context context) {
+        mContext = context;
+    }
 
     public KindDataBase getKindDataBase() {
         return mKindDataBase;
@@ -33,11 +41,11 @@ public class DetailsModel {
         this.countPages = countPages;
     }
 
-    public int getTitleImage() {
+    public String getTitleImage() {
         return titleImage;
     }
 
-    public void setTitleImage(int titleImage) {
+    public void setTitleImage(String titleImage) {
         this.titleImage = titleImage;
     }
 
@@ -54,6 +62,10 @@ public class DetailsModel {
     }
 
     public int[] createIcon(){
+
+//        Resources resources = mContext.getResources();
+//        TypedArray typedArray = resources.obtainTypedArray(mKindDataBase ==KindDataBase.BUS ? R.array.details_title_bus_icon : R.array.details_title_driver_icon);
+
         return mKindDataBase == KindDataBase.BUS ? new int[]{R.mipmap.white_details, R.mipmap.white_gas, R.mipmap.white_repair} : new int[]{R.mipmap.white_details};
     }
 

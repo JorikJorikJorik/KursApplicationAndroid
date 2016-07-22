@@ -63,7 +63,6 @@
     <string name="create_repair_blank">Create Repair Blank</string>
 
 
-
     <!-- Navigation menu and drawer-->
 
     <string name="work_list">Work list</string>
@@ -151,8 +150,8 @@
         <item>D</item>
         <item>E</item>
         <item>F</item>
-
     </string-array>
+
     <!-- Array values -->
 
     <array name="details_title_bus_icon">
@@ -163,6 +162,19 @@
 
     <array name="details_title_driver_icon">
         <item>@mipmap/white_details</item>
+    </array>
+
+    <array name="details_image_icon_driver">
+        <item>@drawable/ic_secondname</item>
+        <item>@drawable/ic_qualification</item>
+        <item>@drawable/ic_experience</item>
+        <item>@drawable/ic_salary</item>
+    </array>
+
+    <array name="details_image_icon_bus">
+        <item>@drawable/ic_number</item>
+        <item>@drawable/ic_model</item>
+        <item>@drawable/ic_condition</item>
     </array>
 
     <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
@@ -186,6 +198,13 @@
     <string name="account_create">Congratulations to the user was created successfully!</string>
     <string name="incorrect_data">Incorrect enter data</string>
     <string name="default_value_string">Default</string>
+    <string name="work_title">Work list</string>
+    <string name="bus_title">Bus list</string>
+    <string name="driver_title">Driver list</string>
+    <string name="repair_title">Repair list</string>
+    <string name="gas_title">Gas list</string>
+    <string name="header_driver_role">Driver</string>
+    <string name="header_dispatcher_role">Dispatcher</string>
     <string-array name="pref_sync_frequency_titles">
         <item>15 minutes</item>
         <item>30 minutes</item>
@@ -214,6 +233,10 @@
         <item>2</item>
         <item>3</item>
     </string-array>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="year">year</string>
+    <string name="grn">grn.</string>
+    <string name="class_details">class</string>
 
 
 </resources>

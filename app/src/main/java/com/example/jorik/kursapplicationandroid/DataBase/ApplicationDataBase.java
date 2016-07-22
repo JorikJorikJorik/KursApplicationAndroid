@@ -38,14 +38,17 @@ public class ApplicationDataBase extends Model {
     @Column(name = "StateWork")
     public StateWork mStateWork;
 
-    @Column(name = "NumberDriver")
-    public int numberDriver;
+    @Column(name = "NumberUser")
+    public int numberUser;
 
     @Column(name = "DateManager")
     public long dateManager;
 
     @Column(name = "Token")
     public String token;
+
+    @Column(name = "ImageUser")
+    public String imageUser;
 
     public ApplicationDataBase() {
     }
@@ -104,12 +107,12 @@ public class ApplicationDataBase extends Model {
         mStateWork = stateWork;
     }
 
-    public int getNumberDriver() {
-        return numberDriver;
+    public int getNumberUser() {
+        return numberUser;
     }
 
-    public void setNumberDriver(int numberDriver) {
-        this.numberDriver = numberDriver;
+    public void setNumberUser(int numberUser) {
+        this.numberUser = numberUser;
     }
 
     public long getDateManager() {
@@ -128,6 +131,14 @@ public class ApplicationDataBase extends Model {
         this.token = token;
     }
 
+    public String getImageUser() {
+        return imageUser;
+    }
+
+    public void setImageUser(String imageUser) {
+        this.imageUser = imageUser;
+    }
+
     public ApplicationDataBase getSelectDataBase() {
         return new Select().from(ApplicationDataBase.class).executeSingle();
     }
@@ -140,8 +151,9 @@ public class ApplicationDataBase extends Model {
         mApplicationDataBase.setRepeatTime(DEFAULT_REPEAT_HOUR);
         mApplicationDataBase.setStateWork(StateWork.NONE);
         mApplicationDataBase.setDateManager(0);
-        mApplicationDataBase.setNumberDriver(0);
+        mApplicationDataBase.setNumberUser(0);
         mApplicationDataBase.setToken("Default"/*context.getResources().getString(R.string.default_value_string)*/);
+        mApplicationDataBase.setImageUser(null/*context.getResources().getString(R.string.default_value_string)*/);
         mApplicationDataBase.save();
     }
 

@@ -205,17 +205,17 @@ public class RegistrationViewModel extends BaseViewModel {
         return visibleDriverFields;
     }
 
+    public void setVisibleDriverFields(boolean visibleDriverFields) {
+        this.visibleDriverFields = visibleDriverFields;
+        notifyPropertyChanged(BR.visibleDriverFields);
+    }
+
     public boolean isFinishActivity() {
         return mRegistrationModel.isFinishActivity();
     }
 
     public void setFinishActivity(boolean finishActivity) {
         mRegistrationModel.setFinishActivity(finishActivity);
-    }
-
-    public void setVisibleDriverFields(boolean visibleDriverFields) {
-        this.visibleDriverFields = visibleDriverFields;
-        notifyPropertyChanged(BR.visibleDriverFields);
     }
 
     private void validationName(String nameS) {
@@ -461,7 +461,7 @@ public class RegistrationViewModel extends BaseViewModel {
 
                     @Override
                     public void onNext(Integer integer) {
-                        resultByResponse(integer, true);
+                        resultByResponse(integer);
                     }
                 });
 
@@ -491,17 +491,20 @@ public class RegistrationViewModel extends BaseViewModel {
 
                     @Override
                     public void onNext(Integer integer) {
-                        resultByResponse(integer, false);
+                        resultByResponse(integer);
                     }
                 });
     }
 
     private void writeInDataBaseAndMove() {
+
         ApplicationDataBase base = ApplicationDataBase.getInstance().getSelectDataBase();
+
         base.setName(mRegistrationModel.getName());
-        base.setRole(!mCheckedTextView.isChecked() ? Role.ADMIN : Role.DRIVER);
+        base.setRole(!mCheckedTextView.isChecked() ? Role.DISPATCHER : Role.DRIVER);
         base.setStateApplication(StateApplication.ENTER);
-        base.setNumberDriver(!mCheckedTextView.isChecked() ? 0 : mRegistrationModel.getNumber());
+        base.setNumberUser(mRegistrationModel.getNumber());
+        base.setImageUser(null);
         base.save();
 
         Intent moveToWork = new Intent(mContext, MainActivity.class);
@@ -514,17 +517,12 @@ public class RegistrationViewModel extends BaseViewModel {
         enableSendButton();
     }
 
-    private void resultByResponse(Integer response, boolean driver) {
-        if (driver) {
-            mRegistrationModel.setNumber(response);
-            response = 200;
-        }
-        if (response.equals(200)) {
-            Toast.makeText(mContext, R.string.account_create, Toast.LENGTH_SHORT).show();
-            writeInDataBaseAndMove();
-            mRegistrationModel.setFinishActivity(true);
-        }
-        else Toast.makeText(mContext, R.string.server_error, Toast.LENGTH_SHORT).show();
+    private void resultByResponse(Integer response) {
+
+        mRegistrationModel.setNumber(response);
+        Toast.makeText(mContext, R.string.account_create, Toast.LENGTH_SHORT).show();
+        writeInDataBaseAndMove();
+        mRegistrationModel.setFinishActivity(true);
 
     }
 

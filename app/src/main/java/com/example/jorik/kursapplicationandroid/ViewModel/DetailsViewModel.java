@@ -4,6 +4,8 @@ import android.content.Context;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.databinding.BindingAdapter;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -23,7 +25,7 @@ import com.example.jorik.kursapplicationandroid.View.Adapter.DetailsPagerAdapter
  * Created by jorik on 26.05.16.
  */
 
-public class DetailsViewModel extends BaseViewModel {
+public class DetailsViewModel extends BaseViewModel implements DetailsPagerViewModel.PhotoDetailsCallback, Parcelable{
 
     private static final int COUNT_PAGES_BUS = 3;
     private static final int COUNT_PAGES_OTHER = 1;
@@ -34,12 +36,28 @@ public class DetailsViewModel extends BaseViewModel {
     private int chooseId;
 
     public DetailsViewModel(Context mContext, KindDataBase mKindDataBase, FragmentManager mFragmentManager,int chooseId){
-        mDetailsModel = new DetailsModel();
+        mDetailsModel = new DetailsModel(mContext);
         this.mContext = mContext;
         this.mFragmentManager = mFragmentManager;
         this.chooseId = chooseId;
         setKindDataBase(mKindDataBase);
     }
+
+    protected DetailsViewModel(Parcel in) {
+        chooseId = in.readInt();
+    }
+
+    public static final Creator<DetailsViewModel> CREATOR = new Creator<DetailsViewModel>() {
+        @Override
+        public DetailsViewModel createFromParcel(Parcel in) {
+            return new DetailsViewModel(in);
+        }
+
+        @Override
+        public DetailsViewModel[] newArray(int size) {
+            return new DetailsViewModel[size];
+        }
+    };
 
     @Bindable
     public KindDataBase getKindDataBase() {
@@ -62,11 +80,11 @@ public class DetailsViewModel extends BaseViewModel {
     }
 
     @Bindable
-    public int getTitleImage() {
+    public String getTitleImage() {
         return mDetailsModel.getTitleImage();
     }
 
-    public void setTitleImage(int titleImage) {
+    public void setTitleImage(String titleImage) {
         mDetailsModel.setTitleImage(titleImage);
         notifyPropertyChanged(BR.titleImage);
     }
@@ -90,16 +108,27 @@ public class DetailsViewModel extends BaseViewModel {
             tabLayout.getTabAt(i).setText(title[i]);
             tabLayout.getTabAt(i).setIcon(icon[i]);
         }
-
-        setTitleImage(mDetailsModel.createIconTitle());
     }
 
     public FragmentPagerAdapter createAdapterViewPage(){
         setTitlePage(mDetailsModel.createPageTitle(mContext));
         setCountPages(getKindDataBase() == KindDataBase.BUS ? COUNT_PAGES_BUS : COUNT_PAGES_OTHER);
-        return new DetailsPagerAdapter(mFragmentManager, getCountPages(), getKindDataBase(), chooseId);
+        return new DetailsPagerAdapter(mFragmentManager, getCountPages(), getKindDataBase(), chooseId, DetailsViewModel.this);
     }
 
 
+    @Override
+    public void setPictureUserDetails(String url) {
+        setTitleImage(url);
+    }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(chooseId);
+    }
 }

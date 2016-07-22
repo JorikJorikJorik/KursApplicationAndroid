@@ -247,14 +247,15 @@ public class SignInViewModel extends BaseViewModel {
     }
 
     private void writeInDataBaseAndMove() {
-        boolean chooseRole = mDataList.get(0).equals(mContext.getString(R.string.dispatcher));
+        boolean chooseRole = mDataList.get(1).equals(mContext.getString(R.string.dispatcher));
         mSignInModel.setFinishActivity(true);
 
         ApplicationDataBase base = ApplicationDataBase.getInstance().getSelectDataBase();
-        base.setName(mSignInModel.getName());
-        base.setRole(chooseRole ? Role.ADMIN : Role.DRIVER);
+        base.setName(mDataList.get(0));
+        base.setRole(chooseRole ? Role.DISPATCHER : Role.DRIVER);
         base.setStateApplication(StateApplication.ENTER);
-        base.setNumberDriver(chooseRole ? 0 : Integer.parseInt(mDataList.get(1)));
+        base.setNumberUser(Integer.parseInt(mDataList.get(2)));
+        base.setImageUser(mDataList.get(3));
         base.save();
 
         Intent moveToWork = new Intent(mContext, MainActivity.class);

@@ -28,7 +28,7 @@ public class FABHideListMoveBehavior extends FloatingActionButton.Behavior {
 
         ApplicationDataBase dataBase = ApplicationDataBase.getInstance().getSelectDataBase();
 
-        if(dataBase.getRole() == Role.ADMIN) {
+        if(dataBase.getRole() == Role.DISPATCHER) {
             if (dyConsumed > 0 && child.getVisibility() == View.VISIBLE) {
                 child.hide();
             } else if (dyConsumed < 0 && child.getVisibility() != View.VISIBLE) {

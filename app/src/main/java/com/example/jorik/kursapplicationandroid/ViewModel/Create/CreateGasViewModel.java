@@ -208,7 +208,7 @@ public class CreateGasViewModel extends BaseViewModel {
 
 
         GasService gasService = RestClient.getServiceInterface(GasService.class);
-        Observable<Integer> requestObservable = gasService.createGasList(mGasDTO,  ApplicationDataBase.getInstance().getSelectDataBase().getNumberDriver());
+        Observable<Integer> requestObservable = gasService.createGasList(mGasDTO,  ApplicationDataBase.getInstance().getSelectDataBase().getNumberUser());
         mSubscriptionRequest = requestObservable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
