@@ -1,13 +1,10 @@
 package com.example.jorik.kursapplicationandroid.DataBase;
 
-import android.content.Context;
-
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
 import com.example.jorik.kursapplicationandroid.Model.Enum.StateApplication;
-import com.example.jorik.kursapplicationandroid.R;
 
 
 @Table(name = "ApplicationDataBase")

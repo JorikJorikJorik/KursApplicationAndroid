@@ -6,7 +6,6 @@ import android.databinding.Bindable;
 
 import com.example.jorik.kursapplicationandroid.BR;
 import com.example.jorik.kursapplicationandroid.Model.POJO.DetailsPageModel;
-import com.example.jorik.kursapplicationandroid.View.Fragment.DetailsActivityFragment;
 
 import java.util.ArrayList;
 

@@ -43,13 +43,13 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".View.Activity.DetailsActivity"
-            android:label="@string/title_activity_details"
+            android:name=".View.Activity.RegistrationActivity"
+            android:label="@string/registration_title"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".View.Activity.RegistrationActivity"
-            android:label="@string/registration_title"
+            android:name=".View.Activity.DetailsActivity"
+            android:label="@string/title_activity_details"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 

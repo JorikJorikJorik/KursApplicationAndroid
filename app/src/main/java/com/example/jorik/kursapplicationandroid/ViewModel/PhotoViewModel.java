@@ -1,10 +1,8 @@
 package com.example.jorik.kursapplicationandroid.ViewModel;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
-import android.os.Build;
 import android.support.v4.widget.SwipeRefreshLayout;
 
 import com.example.jorik.kursapplicationandroid.BR;
@@ -13,15 +11,11 @@ import com.example.jorik.kursapplicationandroid.Model.POJO.PhotoModel;
 import com.example.jorik.kursapplicationandroid.Network.DTO.AlbumInfoDTO;
 import com.example.jorik.kursapplicationandroid.Network.DTO.AlbumsDTO;
 import com.example.jorik.kursapplicationandroid.Network.DTO.DataPhotosDTO;
-import com.example.jorik.kursapplicationandroid.Network.DTO.DataPictureDTO;
 import com.example.jorik.kursapplicationandroid.Network.DTO.PhotosDTO;
-import com.example.jorik.kursapplicationandroid.Network.DTO.PictureDTO;
 import com.example.jorik.kursapplicationandroid.Network.DTO.TaggableFriendsDTO;
 import com.example.jorik.kursapplicationandroid.Network.RestClient;
 import com.example.jorik.kursapplicationandroid.Network.ServiceInterface.FacebookService;
 import com.example.jorik.kursapplicationandroid.R;
-import com.example.jorik.kursapplicationandroid.View.Adapter.FriendsAdapter;
-import com.example.jorik.kursapplicationandroid.View.Adapter.PhotoAdapter;
 import com.example.jorik.kursapplicationandroid.View.Adapter.PhotoAdapter;
 import com.facebook.AccessToken;
 
