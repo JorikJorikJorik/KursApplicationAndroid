@@ -147,7 +147,6 @@ public class PhotoViewModel extends BaseObservable {
                 });
     }
 
-
     public void getPhotoForAdapter(String idAlbums) {
 
         if (!mSwipeRefresh.isRefreshing()) {
