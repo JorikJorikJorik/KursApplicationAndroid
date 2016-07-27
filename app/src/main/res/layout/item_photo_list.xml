@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="friends"
+            type="com.example.jorik.kursapplicationandroid.Network.DTO.DataFriendsDTO"/>
+    </data>
+
+   <FrameLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
+
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardUseCompatPadding="true"
+            app:cardCornerRadius="@dimen/card_radius"
+            app:cardElevation="@dimen/card_elevation"
+            app:contentPadding="@dimen/card_content_padding">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/driverImageView"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    app:loadSrc="@{friends.picture.dataPictureDTO.url}"
+                    app:loadPlaceholder="@{@drawable/user_photo_default}"
+                    app:loadError="@{@drawable/user_photo_error}"
+                    app:loadCircleFlag="@{true}"
+                    app:layout_constraintLeft_toLeftOf="@+id/constraintLayoutDriver"
+                    app:layout_constraintTop_toTopOf="@+id/constraintLayoutDriver"
+                    app:layout_constraintBottom_toBottomOf="@+id/constraintLayoutDriver"/>
+
+            </LinearLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+
+    </FrameLayout>
+</layout>

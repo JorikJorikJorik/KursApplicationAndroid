@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/tools"
+        xmlns="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+
+        <import type="android.view.View"/>
+
+        <variable
+            name="friends"
+            type="com.example.jorik.kursapplicationandroid.ViewModel.FriendsViewModel"/>
+    </data>
+
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/friends_coordination_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/friendsSwipeRefresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:onRefresh="@{friends.getFriendsList}">
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/friends_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{friends.completeRequestFriends ? View.VISIBLE : View.INVISIBLE}"
+                app:adapter='@{friends.friendsAdapter}'>
+
+            </android.support.v7.widget.RecyclerView>
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+
+        <TextView
+            android:id="@+id/error_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@{friends.errorStringFriends}"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:visibility="@{friends.completeRequestFriends ? View.INVISIBLE : View.VISIBLE}"
+            app:onClick="@{friends.getFriendsList}"/>
+
+        <ProgressBar
+            android:id="@+id/friends_progress"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:visibility="@{friends.visibleProgressFriends ? View.VISIBLE : View.INVISIBLE}"/>
+
+    </android.support.design.widget.CoordinatorLayout>
+</layout>

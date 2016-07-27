@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
 
     <data>
 
@@ -22,136 +23,29 @@
         android:paddingTop="@dimen/activity_vertical_margin">
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/secondname_registration_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:error="@{registration.errorValidationName}">
 
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/secondname_registration_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/second_name"
-                    android:text="@={registration.name}"/>
-
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/password_registration_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:error="@{registration.errorValidationPassword}">
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/password_registration_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/password"
-                    android:inputType="textPassword"
-                    android:text="@={registration.passwordR}"/>
-
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/confirm_password_registration_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:error="@{registration.errorValidationConfirmPassword}">
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/confirm_password_registration_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/confirm_password"
-                    android:inputType="textPassword"
-                    android:text="@={registration.confirmPasswordR}"/>
-
-            </android.support.design.widget.TextInputLayout>
-
-            <Switch
-                android:id="@+id/show_password_switcher"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/registration_check_margin"
-                android:text="@string/show_password"
-                android:textSize="@dimen/registration_check_text"/>
-
-            <android.support.v7.widget.AppCompatCheckedTextView
-                android:id="@+id/driver_check_registreation"
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/login_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/registration_check_margin"
-                android:checkMark="?android:attr/listChoiceIndicatorMultiple"
-                android:gravity="center"
-                android:text="@string/driver"
-                android:textSize="@dimen/registration_check_text"
-                app:onClick="@{registration.checkListenerForVisibleView}"/>
+                android:layout_centerInParent="true"
+                />
 
             <TextView
-                android:layout_width="match_parent"
+                android:id="@+id/error_text"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_text"
-                android:text="@string/qualification"
-                android:visibility="@{registration.visibleDriverFields ? View.VISIBLE : View.INVISIBLE}"/>
+                android:layout_gravity="center"
+                android:text="@{registration.errorStringWork}"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_below="@+id/login_button"
+                android:layout_centerHorizontal="true"/>
 
-            <android.support.v7.widget.AppCompatSpinner
-                android:id="@+id/driver_qualification_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/spinner_height"
-                android:entries="@array/qualification_driver"
-                android:visibility="@{registration.visibleDriverFields ? View.VISIBLE : View.INVISIBLE}">
-
-            </android.support.v7.widget.AppCompatSpinner>
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/driver_experience_registration_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="@{registration.visibleDriverFields ? View.VISIBLE : View.INVISIBLE}"
-                app:error="@{registration.errorValidationExperience}">
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/driver_experience_registration_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/experience"
-                    android:text="@={registration.experience}"/>
-
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/driver_salary_registration_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="@{registration.visibleDriverFields ? View.VISIBLE : View.INVISIBLE}"
-                app:error="@{registration.errorValidationSalary}">
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/driver_salary_registration_edit_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/salary"
-                    android:text="@={registration.salary}"/>
-
-            </android.support.design.widget.TextInputLayout>
-
-        </LinearLayout>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/registration_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/fab_margin"
-            android:src="@android:drawable/ic_menu_send"
-            app:enable="@{registration.enableRegistrationButton}"
-            />
+        </RelativeLayout>
 
 
     </android.support.design.widget.CoordinatorLayout>

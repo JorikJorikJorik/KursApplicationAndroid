@@ -1,33 +1,32 @@
 package com.example.jorik.kursapplicationandroid.View.Fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.method.PasswordTransformationMethod;
-import android.text.method.TransformationMethod;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Toast;
 
-import com.example.jorik.kursapplicationandroid.Model.Enum.StateApplication;
 import com.example.jorik.kursapplicationandroid.R;
 import com.example.jorik.kursapplicationandroid.ViewModel.RegistrationViewModel;
 import com.example.jorik.kursapplicationandroid.databinding.FragmentRegistrationBinding;
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class RegistrationActivityFragment extends BaseFragment {
+public class RegistrationActivityFragment extends Fragment {
 
     private FragmentRegistrationBinding mFragmentRegistrationBinding;
     private RegistrationViewModel mRegistrationViewModel;
-    private MenuChangeCallback callback;
+
+    private CallbackManager mCallbackManager;
+    private AccessTokenTracker accessTokenTracker;
+    private AccessToken accessToken;
 
     public static RegistrationActivityFragment newInstance() {
         Bundle args = new Bundle();
@@ -39,7 +38,17 @@ public class RegistrationActivityFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+
+        mCallbackManager = CallbackManager.Factory.create();
+
+        accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(
+                    AccessToken oldAccessToken,
+                    AccessToken currentAccessToken) {
+            }
+        };
+        accessToken = AccessToken.getCurrentAccessToken();
     }
 
     @Override
@@ -48,53 +57,29 @@ public class RegistrationActivityFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_registration, container, false);
 
         mFragmentRegistrationBinding = DataBindingUtil.bind(view);
-        mRegistrationViewModel = new RegistrationViewModel(getActivity(), mFragmentRegistrationBinding.driverCheckRegistreation);
+        mRegistrationViewModel = new RegistrationViewModel(getActivity());
         mFragmentRegistrationBinding.setRegistration(mRegistrationViewModel);
 
-        mFragmentRegistrationBinding.registrationFab.setOnClickListener(v -> {
-            mRegistrationViewModel.moveToWorkWithApplication();
-            if (mRegistrationViewModel.isFinishActivity())
-                getActivity().finish();
-        });
-
-        mFragmentRegistrationBinding.driverQualificationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                mRegistrationViewModel.setQualification(getActivity().getResources().getStringArray(R.array.qualification_driver)[position]);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        mFragmentRegistrationBinding.showPasswordSwitcher.setOnCheckedChangeListener((v, isChecked) -> {
-            TransformationMethod method = isChecked ? null : new PasswordTransformationMethod();
-            mFragmentRegistrationBinding.passwordRegistrationEditText.setTransformationMethod(method);
-            mFragmentRegistrationBinding.confirmPasswordRegistrationEditText.setTransformationMethod(method);
-        });
+        mFragmentRegistrationBinding.loginButton.setFragment(this);
+        mFragmentRegistrationBinding.loginButton.setReadPermissions("user_friends");
+        mFragmentRegistrationBinding.loginButton.registerCallback(mCallbackManager, mRegistrationViewModel.createFacebookLoginCallback(accessToken));
 
         return view;
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        callback = (MenuChangeCallback) activity;
-        super.onAttach(activity);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.registration_menu_button) {
-            callback.changeMenu(StateApplication.SIGNIN);
-        }
-        return super.onOptionsItemSelected(item);
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     public void onDestroy() {
-        mRegistrationViewModel.unsubscribe();
         super.onDestroy();
+        accessTokenTracker.stopTracking();
+        mRegistrationViewModel.unsubscribe();
     }
+
+
 }
 

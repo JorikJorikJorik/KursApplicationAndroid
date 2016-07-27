@@ -6,76 +6,31 @@ package com.example.jorik.kursapplicationandroid.Model.POJO;
 
 public class RegistrationModel {
 
-    private String name;
-    private String password;
-    private String confirmPassword;
-    private String qualification;
-    private Integer experience;
-    private Integer salary;
-    private Integer number;
-    private boolean finishActivity;
+    private boolean visibleProgress;
+    private String errorString;
+    private boolean completeRequest;
 
-    public String getName() {
-        return name;
+    public boolean getCompleteRequest() {
+        return completeRequest;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setCompleteRequest(boolean completeRequest) {
+        this.completeRequest = completeRequest;
     }
 
-    public String getPassword() {
-        return password;
+    public boolean getVisibleProgress() {
+        return visibleProgress;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setVisibleProgress(boolean visibleProgress) {
+        this.visibleProgress = visibleProgress;
     }
 
-    public String getConfirmPassword() {
-        return confirmPassword;
+    public String getErrorString() {
+        return errorString;
     }
 
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
-    }
-
-    public String getQualification() {
-        return qualification;
-    }
-
-    public void setQualification(String qualification) {
-        this.qualification = qualification;
-    }
-
-    public Integer getExperience() {
-        return experience;
-    }
-
-    public void setExperience(Integer experience) {
-        this.experience = experience;
-    }
-
-    public Integer getSalary() {
-        return salary;
-    }
-
-    public void setSalary(Integer salary) {
-        this.salary = salary;
-    }
-
-    public Integer getNumber() {
-        return number;
-    }
-
-    public void setNumber(Integer number) {
-        this.number = number;
-    }
-
-    public boolean isFinishActivity() {
-        return finishActivity;
-    }
-
-    public void setFinishActivity(boolean finishActivity) {
-        this.finishActivity = finishActivity;
+    public void setErrorString(String errorString) {
+        this.errorString = errorString;
     }
 }

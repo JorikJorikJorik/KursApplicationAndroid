@@ -57,19 +57,17 @@
     <string name="create_gas_title">Create Gas Blank</string>
     <string name="create_work_title">Create Work Blank</string>
     <string name="registration_title">Registration</string>
-    <string name="title_activity_settings">Settings</string>
-    <string name="setting_title">Setting</string>
     <string name="title_activity_create_repair_data">CreateRepairDataActivity</string>
     <string name="create_repair_blank">Create Repair Blank</string>
 
 
     <!-- Navigation menu and drawer-->
 
-    <string name="work_list">Work list</string>
+    <string name="work_list">My profile</string>
     <string name="bus_list">Bus list</string>
-    <string name="driver_list">Driver list</string>
+    <string name="driver_list">All Friends</string>
     <string name="repair_list">Repair list</string>
-    <string name="gas_list">Gas list</string>
+    <string name="gas_list">Pictures</string>
     <string name="task_calendar">Task calendar</string>
     <string name="name_and_lastname">Name and Lastname</string>
     <string name="closeDrawer">Navigation View</string>
@@ -191,18 +189,19 @@
 
     <!-- Example settings for Data & Sync -->
     <string name="pref_header_data_sync">Data &amp; sync</string>
-
+    <string name="facebook_app_id">268049363568894</string>
     <string name="pref_title_sync_frequency">Sync frequency</string>
     <string name="dispatcher">Dispatcher</string>
     <string name="server_error">Server error</string>
     <string name="account_create">Congratulations to the user was created successfully!</string>
     <string name="incorrect_data">Incorrect enter data</string>
     <string name="default_value_string">Default</string>
-    <string name="work_title">Work list</string>
+    <string name="profile_title">My Profile</string>
     <string name="bus_title">Bus list</string>
-    <string name="driver_title">Driver list</string>
-    <string name="repair_title">Repair list</string>
-    <string name="gas_title">Gas list</string>
+    <string name="friends_title">All Friends</string>
+    <string name="repair_title">Pictures</string>
+    <string name="pictures_title">Pictures</string>
+    <string name="dev_info">Dev: Jorik Emelyanov</string>
     <string name="header_driver_role">Driver</string>
     <string name="header_dispatcher_role">Dispatcher</string>
     <string-array name="pref_sync_frequency_titles">
@@ -237,6 +236,11 @@
     <string name="year">year</string>
     <string name="grn">grn.</string>
     <string name="class_details">class</string>
+    <string name="user_cancel_login">User cancel login</string>
+    <string name="taggable_friends_part_url">taggable_friends</string>
+    <string name="albums_part_url">albums</string>
+    <string name="photo_part_url">photos{picture}</string>
+    <string name="timeline_photos">Timeline Photos</string>
 
 
 </resources>

@@ -6,31 +6,15 @@
                 android:background="@mipmap/title_navigation"
                 android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/profession_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/name_text"
-        android:layout_marginBottom="@dimen/header_name_margin"
-        android:text="@string/profession"
-        android:textAppearance="?android:attr/textAppearanceSmall"/>
 
     <TextView
         android:id="@+id/name_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/profession_text"
-        android:layout_marginLeft="@dimen/header_name_margin"
         android:text="@string/name_and_lastname"
-        android:textAppearance="?android:attr/textAppearanceLarge"/>
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"/>
 
-    <ImageView
-        android:id="@+id/imageViewPhotoUser"
-        android:layout_width="@dimen/registration_photo_image"
-        android:layout_height="@dimen/registration_photo_image"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_margin="@dimen/header_image_margin"
-        app:srcCompat="@drawable/common_google_signin_btn_icon_dark"/>
+
 </RelativeLayout>

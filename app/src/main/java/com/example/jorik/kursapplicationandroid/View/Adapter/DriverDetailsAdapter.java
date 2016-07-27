@@ -3,13 +3,11 @@ package com.example.jorik.kursapplicationandroid.View.Adapter;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.jorik.kursapplicationandroid.Model.POJO.DetailsItemModel;
-import com.example.jorik.kursapplicationandroid.Network.DTO.DriverDTO;
 import com.example.jorik.kursapplicationandroid.databinding.ItemDetailsBinding;
 
 import java.util.List;

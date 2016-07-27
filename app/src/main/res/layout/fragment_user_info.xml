@@ -1,0 +1,76 @@
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View"/>
+
+        <variable
+            name="user"
+            type="com.example.jorik.kursapplicationandroid.ViewModel.UserInfoViewModel"/>
+
+    </data>
+
+    <android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context=".View.Fragment.WorkListActivityFragment"
+        tools:showIn="@layout/activity_user_info">
+
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/constraintLayoutDriver"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <ImageView
+                android:id="@+id/userPhotoImageView"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                app:layout_constraintBottom_toBottomOf="@+id/constraintLayoutDriver"
+                app:layout_constraintLeft_toLeftOf="@+id/constraintLayoutDriver"
+                app:layout_constraintTop_toTopOf="@+id/constraintLayoutDriver"
+                app:layout_constraintVertical_bias="0.0"
+                app:loadCircleFlag="@{true}"
+                app:loadError="@{@drawable/user_photo_error}"
+                app:loadPlaceholder="@{@drawable/user_photo_default}"
+                app:loadSrc="@{user.photo}"/>
+
+            <TextView
+                android:id="@+id/userSecondnameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text='@{"Secondname: " + user.name ?? "Secondname default" }'
+                app:layout_constraintLeft_toRightOf="@+id/userPhotoImageView"
+                app:layout_constraintTop_toTopOf="@+id/constraintLayoutDriver"/>
+
+            <TextView
+                android:id="@+id/userEmailTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text='@{"Email: " + user.email ?? "Email default"}'
+                app:layout_constraintLeft_toRightOf="@+id/userPhotoImageView"
+                app:layout_constraintTop_toBottomOf="@+id/userSecondnameTextView"/>
+
+
+            <TextView
+                android:id="@+id/userLocationTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text='@{"Location: " + user.coordinate ?? "Location default"}'
+                app:layout_constraintLeft_toRightOf="@+id/userPhotoImageView"
+                app:layout_constraintTop_toBottomOf="@+id/userEmailTextView"/>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.design.widget.CoordinatorLayout>
+</layout>

@@ -2,26 +2,22 @@ package com.example.jorik.kursapplicationandroid.ViewModel;
 
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.BaseObservable;
 import android.databinding.Bindable;
-import android.util.Log;
-import android.widget.CheckedTextView;
-import android.widget.Toast;
 
 import com.example.jorik.kursapplicationandroid.BR;
 import com.example.jorik.kursapplicationandroid.DataBase.ApplicationDataBase;
-import com.example.jorik.kursapplicationandroid.Model.Enum.Role;
 import com.example.jorik.kursapplicationandroid.Model.Enum.StateApplication;
 import com.example.jorik.kursapplicationandroid.Model.POJO.RegistrationModel;
-import com.example.jorik.kursapplicationandroid.Model.POJO.RegistrationModelView;
-import com.example.jorik.kursapplicationandroid.Network.DTO.AccountDTO;
-import com.example.jorik.kursapplicationandroid.Network.DTO.AccountDispatcherDTO;
-import com.example.jorik.kursapplicationandroid.Network.DTO.AccountDriverDTO;
-import com.example.jorik.kursapplicationandroid.Network.DTO.DriverDTO;
+import com.example.jorik.kursapplicationandroid.Network.DTO.UserDTO;
 import com.example.jorik.kursapplicationandroid.Network.RestClient;
-import com.example.jorik.kursapplicationandroid.Network.ServiceInterface.AccountService;
+import com.example.jorik.kursapplicationandroid.Network.ServiceInterface.FacebookService;
 import com.example.jorik.kursapplicationandroid.R;
 import com.example.jorik.kursapplicationandroid.View.Activity.MainActivity;
-import com.google.firebase.iid.FirebaseInstanceId;
+import com.facebook.AccessToken;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginResult;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -29,525 +25,101 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static android.content.ContentValues.TAG;
-
 /**
  * Created by jorik on 05.06.16.
  */
 
-public class RegistrationViewModel extends BaseViewModel {
+public class RegistrationViewModel extends BaseObservable {
 
-    private static final int MAX_COUNT_NAME = 15;
-    private static final int MAX_COUNT_PASSWORD = 15;
-    private static final int MAX_COUNT_EXPERIENCE = 3;
-    private static final int MAX_COUNT_SALARY = 6;
 
     private Context mContext;
-    private RegistrationModelView mRegistrationModelView;
     private RegistrationModel mRegistrationModel;
+    private Subscription mSubscriptionUserInfo;
 
-    private Observable<String> passwordObservable;
-    private Observable<String> confirmPasswordObservable;
-    private Observable<Boolean> isName;
-    private Observable<Boolean> isPassword;
-    private Observable<Boolean> isConfirmPassword;
-    private Observable<Boolean> passwordValidation;
-    private Observable<Boolean> isExperience;
-    private Observable<Boolean> isSalary;
-    private boolean enableRegistrationButton;
-    private boolean visibleDriverFields;
+    private UserDTO mUserDTO;
 
-    private Subscription mSubscriptionName;
-    private Subscription mSubscriptionPassword;
-    private Subscription mSubscriptionPasswordValidation;
-    private Subscription mSubscriptionConfirmPassword;
-    private Subscription mSubscriptionExperience;
-    private Subscription mSubscriptionSalary;
-    private Subscription mSubscriptionEnable;
-    private Subscription mSubscriptionAccountDriver;
-    private Subscription mSubscriptionAccountDispatcher;
-
-    private CheckedTextView mCheckedTextView;
-
-    public RegistrationViewModel(Context context, CheckedTextView checkedTextView) {
+    public RegistrationViewModel(Context context) {
         mContext = context;
-        mCheckedTextView = checkedTextView;
         mRegistrationModel = new RegistrationModel();
-        mRegistrationModelView = new RegistrationModelView();
+        mUserDTO = new UserDTO();
     }
 
-    @Bindable
-    public String getName() {
-        return mRegistrationModel.getName();
-    }
 
-    public void setName(String name) {
-        validationName(name);
-        notifyPropertyChanged(BR.name);
-    }
+    private void writeInDataBaseAndMove(UserDTO userDTO) {
 
-    @Bindable
-    public String getPasswordR() {
-        return mRegistrationModel.getPassword();
-    }
+        if (userDTO != null) {
 
-    public void setPasswordR(String password) {
-        validationPassword(password);
-        notifyPropertyChanged(BR.passwordR);
-    }
+            ApplicationDataBase base = ApplicationDataBase.getInstance().getSelectDataBase();
+            base.setIdUser(userDTO.getId());
+            base.setName(userDTO.getName());
+            base.setImageUser(userDTO.getPicture().getDataPictureDTO().getUrl());
+            base.setStateApplication(StateApplication.ENTER);
+            base.setLocation(userDTO.getLocation() == null ? null : userDTO.getLocation().getName());
+            base.setEmail(userDTO.getEmail());
+            base.save();
 
-    @Bindable
-    public String getConfirmPasswordR() {
-        return mRegistrationModel.getConfirmPassword();
-    }
-
-    public void setConfirmPasswordR(String confirmPassword) {
-        validationConfirmPassword(confirmPassword);
-        notifyPropertyChanged(BR.confirmPasswordR);
-    }
-
-    @Bindable
-    public String getQualification() {
-        return mRegistrationModel.getQualification();
-    }
-
-    public void setQualification(String qualification) {
-        mRegistrationModel.setQualification(qualification);
-        notifyPropertyChanged(BR.qualification);
-    }
-
-    @Bindable
-    public String getExperience() {
-        if (mRegistrationModel.getExperience() != null)
-            return Integer.toString(mRegistrationModel.getExperience());
-        return "";
-    }
-
-    public void setExperience(String experience) {
-        validationExperience(experience);
-        notifyPropertyChanged(BR.experience);
-    }
-
-    @Bindable
-    public String getSalary() {
-        if (mRegistrationModel.getSalary() != null)
-            return Integer.toString(mRegistrationModel.getSalary());
-        return "";
-    }
-
-    public void setSalary(String salary) {
-        validationSalary(salary);
-        notifyPropertyChanged(BR.salary);
-    }
-
-    @Bindable
-    public String getErrorValidationName() {
-        return mRegistrationModelView.getErrorValidationName();
-    }
-
-    public void setErrorValidationName(String errorValidationName) {
-        mRegistrationModelView.setErrorValidationName(errorValidationName);
-        notifyPropertyChanged(BR.errorValidationName);
-    }
-
-    @Bindable
-    public String getErrorValidationPassword() {
-        return mRegistrationModelView.getErrorValidationPassword();
-    }
-
-    public void setErrorValidationPassword(String errorValidationPassword) {
-        mRegistrationModelView.setErrorValidationPassword(errorValidationPassword);
-        notifyPropertyChanged(BR.errorValidationPassword);
-    }
-
-    @Bindable
-    public String getErrorValidationConfirmPassword() {
-        return mRegistrationModelView.getErrorValidationConfirmPassword();
-    }
-
-    public void setErrorValidationConfirmPassword(String errorValidationConfirmPassword) {
-        mRegistrationModelView.setErrorValidationConfirmPassword(errorValidationConfirmPassword);
-        notifyPropertyChanged(BR.errorValidationConfirmPassword);
-    }
-
-    @Bindable
-    public String getErrorValidationExperience() {
-        return mRegistrationModelView.getErrorValidationExperience();
-    }
-
-    public void setErrorValidationExperience(String errorValidationExperience) {
-        mRegistrationModelView.setErrorValidationExperience(errorValidationExperience);
-        notifyPropertyChanged(BR.errorValidationExperience);
-    }
-
-    @Bindable
-    public String getErrorValidationSalary() {
-        return mRegistrationModelView.getErrorValidationSalary();
-    }
-
-    public void setErrorValidationSalary(String errorValidationSalary) {
-        mRegistrationModelView.setErrorValidationSalary(errorValidationSalary);
-        notifyPropertyChanged(BR.errorValidationSalary);
-    }
-
-    @Bindable
-    public boolean getEnableRegistrationButton() {
-        return enableRegistrationButton;
-    }
-
-    public void setEnableRegistrationButton(boolean enableRegistrationButton) {
-        this.enableRegistrationButton = enableRegistrationButton;
-        notifyPropertyChanged(BR.enableRegistrationButton);
-    }
-
-    @Bindable
-    public boolean isVisibleDriverFields() {
-        return visibleDriverFields;
-    }
-
-    public void setVisibleDriverFields(boolean visibleDriverFields) {
-        this.visibleDriverFields = visibleDriverFields;
-        notifyPropertyChanged(BR.visibleDriverFields);
-    }
-
-    public boolean isFinishActivity() {
-        return mRegistrationModel.isFinishActivity();
-    }
-
-    public void setFinishActivity(boolean finishActivity) {
-        mRegistrationModel.setFinishActivity(finishActivity);
-    }
-
-    private void validationName(String nameS) {
-        Observable<String> nameObservable = Observable.just(nameS)
-                .map(String::trim)
-                .filter(name -> name.length() < MAX_COUNT_NAME)
-                .map(name -> {
-                    setErrorValidationName(name.length() == 0 ? mContext.getString(R.string.empty_field) : null);
-                    isName = Observable.just(name.length() != 0);
-                    return name;
-                });
-
-        mSubscriptionName = nameObservable.subscribe(new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(String s) {
-                mRegistrationModel.setName(s);
-            }
-        });
-        enableSendButton();
-    }
-
-    private void validationPassword(String passwordS) {
-
-        passwordObservable = Observable.just(passwordS)
-                .map(String::trim)
-                .filter(password -> password.length() < MAX_COUNT_PASSWORD)
-                .map(password -> {
-                    setErrorValidationPassword(password.length() == 0 ? mContext.getString(R.string.empty_field) : null);
-                    isPassword = Observable.just(password.length() != 0);
-                    return password;
-                });
-
-        mSubscriptionPassword = passwordObservable.subscribe(new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(String s) {
-                mRegistrationModel.setPassword(s);
-            }
-        });
-
-        if (mRegistrationModel.getPassword().length() != 0)
-            equalsPassword();
-        enableSendButton();
-    }
-
-    private void validationConfirmPassword(String confirmPasswordS) {
-
-        confirmPasswordObservable = Observable.just(confirmPasswordS)
-                .map(String::trim)
-                .filter(confirm -> confirm.length() < MAX_COUNT_PASSWORD)
-                .map(confirm -> {
-                    setErrorValidationConfirmPassword(confirm.length() == 0 ? mContext.getString(R.string.empty_field) : null);
-                    isConfirmPassword = Observable.just(confirm.length() != 0);
-                    return confirm;
-                });
-
-        mSubscriptionConfirmPassword = confirmPasswordObservable.subscribe(new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(String s) {
-                mRegistrationModel.setConfirmPassword(s);
-            }
-        });
-
-        if (mRegistrationModel.getConfirmPassword().length() != 0)
-            equalsPassword();
-        enableSendButton();
-    }
-
-    private void validationExperience(String experienceS) {
-        Observable<Integer> experienceObservable = Observable.just(experienceS)
-                .filter(experience -> experience.length() < MAX_COUNT_EXPERIENCE)
-                .map(Integer::parseInt)
-                .filter(num -> num > 0);
-
-
-        mSubscriptionExperience = experienceObservable.subscribe(new Subscriber<Integer>() {
-            @Override
-            public void onCompleted() {
-                setErrorValidationExperience(null);
-                isExperience = Observable.just(true);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                setErrorValidationExperience(mContext.getString(R.string.enter_number_error));
-                mRegistrationModel.setExperience(null);
-                isExperience = Observable.just(false);
-            }
-
-            @Override
-            public void onNext(Integer integer) {
-                mRegistrationModel.setExperience(integer);
-            }
-        });
-
-        enableSendButton();
-    }
-
-    private void validationSalary(String salaryS) {
-        Observable<Integer> salaryObservable = Observable.just(salaryS)
-                .filter(num -> num.length() < MAX_COUNT_SALARY)
-                .map(Integer::parseInt)
-                .filter(num -> num > 0);
-
-
-        mSubscriptionSalary = salaryObservable.subscribe(new Subscriber<Integer>() {
-            @Override
-            public void onCompleted() {
-                setErrorValidationSalary(null);
-                isSalary = Observable.just(true);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                setErrorValidationSalary(mContext.getString(R.string.enter_number_error));
-                mRegistrationModel.setSalary(null);
-                isSalary = Observable.just(false);
-            }
-
-            @Override
-            public void onNext(Integer integer) {
-                mRegistrationModel.setSalary(integer);
-            }
-        });
-
-        enableSendButton();
-    }
-
-    private void equalsPassword() {
-        if (confirmPasswordObservable != null && passwordObservable != null) {
-            passwordValidation = Observable.combineLatest(passwordObservable, confirmPasswordObservable, String::equals);
-            mSubscriptionPasswordValidation = passwordValidation.subscribe(validPass -> {
-                setErrorValidationConfirmPassword(!validPass ? mContext.getString(R.string.passwor_not_same) : null);
-            });
+            Intent moveToWork = new Intent(mContext, MainActivity.class);
+            mContext.startActivity(moveToWork);
         }
     }
 
-    private void enableSendButton() {
-        Observable<Boolean> enableSend = null;
-
-        if (mCheckedTextView.isChecked()) {
-            enableSend = Observable.combineLatest(isName, isPassword, isConfirmPassword, passwordValidation, isExperience, isSalary,
-                    (name, pass, confirmPass, passValid, experience, salary) -> name && pass && confirmPass && passValid && experience && salary);
-        } else {
-            enableSend = Observable.combineLatest(isName, isPassword, isConfirmPassword, passwordValidation,
-                    (name, pass, confirmPass, passValid) -> name && pass && confirmPass && passValid);
-        }
-
-        mSubscriptionEnable = enableSend.subscribe(new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                setEnableRegistrationButton(false);
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                setEnableRegistrationButton(aBoolean);
-            }
-        });
-        equalsPassword();
+    @Bindable
+    public String getErrorStringWork() {
+        return mRegistrationModel.getErrorString();
     }
 
-    public void moveToWorkWithApplication() {
-        if (!mCheckedTextView.isChecked()) {
-            createAccountDispatcher();
-        } else createAccountDriver();
+    public void setErrorStringWork(String errorString) {
+        mRegistrationModel.setErrorString(errorString);
+        notifyPropertyChanged(BR.errorStringWork);
     }
 
-    private AccountDTO createAccountDTO() {
-        AccountDTO mAccountDTO = new AccountDTO();
-        mAccountDTO.setSecondname(mRegistrationModel.getName());
-        mAccountDTO.setPassword(mRegistrationModel.getPassword());
-        mAccountDTO.setToken(FirebaseInstanceId.getInstance().getToken());
-        mAccountDTO.setRole(!mCheckedTextView.isChecked() ? mContext.getString(R.string.dispatcher) : mContext.getString(R.string.driver));
-        return mAccountDTO;
-    }
+    private void getInformationUserFromFacebook(String accessToken) {
 
-    private DriverDTO createDriverDTO() {
-        DriverDTO mDriverDTO = new DriverDTO();
-        mDriverDTO.setSecondname(mRegistrationModel.getName());
-        mDriverDTO.setExperience(mRegistrationModel.getExperience());
-        mDriverDTO.setSalary(mRegistrationModel.getSalary());
-        mDriverDTO.setQualification(mRegistrationModel.getQualification());
-        return mDriverDTO;
-    }
-
-    private void createAccountDriver() {
-
-        AccountDriverDTO mAccountDriverDTO = new AccountDriverDTO();
-        mAccountDriverDTO.setAccountDTO(createAccountDTO());
-        mAccountDriverDTO.setDriverDTO(createDriverDTO());
-
-        AccountService accountService = RestClient.getServiceInterface(AccountService.class);
-        Observable<Integer> accountObservable = accountService.createDriverAccount(mAccountDriverDTO);
-        mSubscriptionAccountDriver = accountObservable.subscribeOn(Schedulers.io())
+        FacebookService facebookService = RestClient.getServiceInterface(FacebookService.class);
+        Observable<UserDTO> getInfo = facebookService.infoAboutUser(accessToken);
+        mSubscriptionUserInfo = getInfo.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Integer>() {
+                .subscribe(new Subscriber<UserDTO>() {
                     @Override
                     public void onCompleted() {
-
+                        writeInDataBaseAndMove(mUserDTO);
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d(TAG, e.toString());
-                        Toast.makeText(mContext, e.toString(), Toast.LENGTH_SHORT).show();
-                        mRegistrationModel.setFinishActivity(false);
+                        writeInDataBaseAndMove(mUserDTO);
                     }
 
                     @Override
-                    public void onNext(Integer integer) {
-                        resultByResponse(integer);
-                    }
-                });
-
-    }
-
-    private void createAccountDispatcher() {
-
-        AccountDispatcherDTO mAccountDispatcherDTO = new AccountDispatcherDTO();
-        mAccountDispatcherDTO.setAccountDTO(createAccountDTO());
-
-        AccountService accountService = RestClient.getServiceInterface(AccountService.class);
-        Observable<Integer> accountObservable = accountService.createDispatcherAccount(mAccountDispatcherDTO);
-        mSubscriptionAccountDispatcher = accountObservable.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Integer>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(TAG, e.toString());
-                        Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        mRegistrationModel.setFinishActivity(false);
-                    }
-
-                    @Override
-                    public void onNext(Integer integer) {
-                        resultByResponse(integer);
+                    public void onNext(UserDTO userDTO) {
+                        mUserDTO = userDTO;
                     }
                 });
     }
 
-    private void writeInDataBaseAndMove() {
+    public FacebookCallback<LoginResult> createFacebookLoginCallback(AccessToken accessToken) {
+        return new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                if (accessToken != null)
+                    getInformationUserFromFacebook(accessToken.getToken());
+            }
 
-        ApplicationDataBase base = ApplicationDataBase.getInstance().getSelectDataBase();
+            @Override
+            public void onCancel() {
+                setErrorStringWork(mContext.getString(R.string.user_cancel_login));
+            }
 
-        base.setName(mRegistrationModel.getName());
-        base.setRole(!mCheckedTextView.isChecked() ? Role.DISPATCHER : Role.DRIVER);
-        base.setStateApplication(StateApplication.ENTER);
-        base.setNumberUser(mRegistrationModel.getNumber());
-        base.setImageUser(null);
-        base.save();
-
-        Intent moveToWork = new Intent(mContext, MainActivity.class);
-        mContext.startActivity(moveToWork);
+            @Override
+            public void onError(FacebookException error) {
+                setErrorStringWork(error.toString());
+            }
+        };
     }
-
-    public void checkListenerForVisibleView() {
-        setVisibleDriverFields(!mCheckedTextView.isChecked());
-        mCheckedTextView.setChecked(!mCheckedTextView.isChecked());
-        enableSendButton();
-    }
-
-    private void resultByResponse(Integer response) {
-
-        mRegistrationModel.setNumber(response);
-        Toast.makeText(mContext, R.string.account_create, Toast.LENGTH_SHORT).show();
-        writeInDataBaseAndMove();
-        mRegistrationModel.setFinishActivity(true);
-
-    }
-
 
     public void unsubscribe() {
-
-        if (mSubscriptionName != null)
-            mSubscriptionName.unsubscribe();
-        if (mSubscriptionPassword != null)
-            mSubscriptionPassword.unsubscribe();
-        if (mSubscriptionPasswordValidation != null)
-            mSubscriptionPasswordValidation.unsubscribe();
-        if (mSubscriptionConfirmPassword != null)
-            mSubscriptionConfirmPassword.unsubscribe();
-        if (mSubscriptionExperience != null)
-            mSubscriptionExperience.unsubscribe();
-        if (mSubscriptionSalary != null)
-            mSubscriptionSalary.unsubscribe();
-        if (mSubscriptionEnable != null)
-            mSubscriptionEnable.unsubscribe();
-        if (mSubscriptionAccountDriver != null)
-            mSubscriptionAccountDriver.unsubscribe();
-        if (mSubscriptionAccountDispatcher != null)
-            mSubscriptionAccountDispatcher.unsubscribe();
-
+        if (mSubscriptionUserInfo != null)
+            mSubscriptionUserInfo.unsubscribe();
     }
 
 

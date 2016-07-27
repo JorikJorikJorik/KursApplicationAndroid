@@ -6,9 +6,7 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
-import com.example.jorik.kursapplicationandroid.Model.Enum.Role;
 import com.example.jorik.kursapplicationandroid.Model.Enum.StateApplication;
-import com.example.jorik.kursapplicationandroid.Model.Enum.StateWork;
 import com.example.jorik.kursapplicationandroid.R;
 
 
@@ -23,9 +21,6 @@ public class ApplicationDataBase extends Model {
     @Column(name = "StateApplication")
     public StateApplication mStateApplication;
 
-    @Column(name = "Role")
-    public Role mRole;
-
     @Column(name = "Name")
     public String name;
 
@@ -34,9 +29,6 @@ public class ApplicationDataBase extends Model {
 
     @Column(name = "RepeatTime")
     public long repeatTime;
-
-    @Column(name = "StateWork")
-    public StateWork mStateWork;
 
     @Column(name = "NumberUser")
     public int numberUser;
@@ -49,6 +41,15 @@ public class ApplicationDataBase extends Model {
 
     @Column(name = "ImageUser")
     public String imageUser;
+
+    @Column(name = "Email")
+    public String email;
+
+    @Column(name = "Location")
+    public String location;
+
+    @Column(name = "IdUser")
+    public String IdUser;
 
     public ApplicationDataBase() {
     }
@@ -65,14 +66,6 @@ public class ApplicationDataBase extends Model {
 
     public void setStateApplication(StateApplication stateApplication) {
         mStateApplication = stateApplication;
-    }
-
-    public Role getRole() {
-        return mRole;
-    }
-
-    public void setRole(Role role) {
-        mRole = role;
     }
 
     public String getName() {
@@ -99,13 +92,6 @@ public class ApplicationDataBase extends Model {
         this.repeatTime = repeatTime;
     }
 
-    public StateWork getStateWork() {
-        return mStateWork;
-    }
-
-    public void setStateWork(StateWork stateWork) {
-        mStateWork = stateWork;
-    }
 
     public int getNumberUser() {
         return numberUser;
@@ -139,6 +125,30 @@ public class ApplicationDataBase extends Model {
         this.imageUser = imageUser;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getIdUser() {
+        return IdUser;
+    }
+
+    public void setIdUser(String idUser) {
+        IdUser = idUser;
+    }
+
     public ApplicationDataBase getSelectDataBase() {
         return new Select().from(ApplicationDataBase.class).executeSingle();
     }
@@ -146,13 +156,14 @@ public class ApplicationDataBase extends Model {
     public void setDefaultValues() {
         mApplicationDataBase.setName("Default"/*context.getResources().getString(R.string.default_value_string)*/);
         mApplicationDataBase.setStateApplication(StateApplication.REGISTRATION);
-        mApplicationDataBase.setRole(Role.NONE);
         mApplicationDataBase.setStartTime(DEFAULT_START_HOUR);
         mApplicationDataBase.setRepeatTime(DEFAULT_REPEAT_HOUR);
-        mApplicationDataBase.setStateWork(StateWork.NONE);
         mApplicationDataBase.setDateManager(0);
         mApplicationDataBase.setNumberUser(0);
         mApplicationDataBase.setToken("Default"/*context.getResources().getString(R.string.default_value_string)*/);
+        mApplicationDataBase.setEmail("Default");
+        mApplicationDataBase.setLocation("Default");
+        mApplicationDataBase.setIdUser("Default");
         mApplicationDataBase.setImageUser(null/*context.getResources().getString(R.string.default_value_string)*/);
         mApplicationDataBase.save();
     }

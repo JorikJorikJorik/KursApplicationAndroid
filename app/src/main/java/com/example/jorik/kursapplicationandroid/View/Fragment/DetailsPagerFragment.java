@@ -4,50 +4,41 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.example.jorik.kursapplicationandroid.Model.Enum.KindDataBase;
 import com.example.jorik.kursapplicationandroid.R;
-import com.example.jorik.kursapplicationandroid.View.Adapter.DriverAdapter;
 import com.example.jorik.kursapplicationandroid.ViewModel.DetailsPagerViewModel;
 import com.example.jorik.kursapplicationandroid.ViewModel.DetailsViewModel;
 import com.example.jorik.kursapplicationandroid.databinding.FragmentDetailsPagerBinding;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import static com.example.jorik.kursapplicationandroid.View.Fragment.DetailsActivityFragment.CHOOSE_ITEM_ID;
 
 /**
  * Created by jorik on 26.05.16.
  */
 
-public class DetailsPagerFragment extends BaseFragment {
+public class DetailsPagerFragment extends Fragment {
 
-    private static final String ARGUMENTS_NUMBER_PAGES = "position_pages";
-    private static final String ARGUMENTS_KIND_ENUM_PAGES = "kind_pages";
     private static final String ARGUMENTS_CHOOSE_ID = "choose_id";
+    private static final String ARGUMENTS_PHOTO_LIST = "list_photo";
     private static final String ARGUMENTS_VIEW_MODEL = "view_model";
 
     private FragmentDetailsPagerBinding mFragmentDetailsPagerBinding;
     private DetailsPagerViewModel mDetailsPagerViewModel;
-    private KindDataBase mKindDataBase;
-    private int position;
     private int chooseId;
-    private DetailsViewModel detailsViewModel;
+    private ArrayList<String> photoList;
+    private ViewModelCallback mCallback;
+    private DetailsViewModel mViewModel;
 
-    public static Fragment newInstance(KindDataBase mKindDataBase, int position, int chooseId, DetailsViewModel detailsViewModel) {
+    public static Fragment newInstance(ArrayList<String> list, int chooseId, DetailsViewModel viewModel) {
 
         DetailsPagerFragment fragment = new DetailsPagerFragment();
         Bundle args = new Bundle();
-        args.putInt(ARGUMENTS_NUMBER_PAGES, position);
-        args.putInt(ARGUMENTS_KIND_ENUM_PAGES, mKindDataBase.getValue());
         args.putInt(ARGUMENTS_CHOOSE_ID, chooseId);
-        args.putParcelable(ARGUMENTS_VIEW_MODEL, detailsViewModel);
+        args.putStringArrayList(ARGUMENTS_PHOTO_LIST, list);
+        args.putParcelable(ARGUMENTS_VIEW_MODEL, viewModel);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,9 +47,9 @@ public class DetailsPagerFragment extends BaseFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         chooseId = getArguments().getInt(ARGUMENTS_CHOOSE_ID);
-        position = getArguments().getInt(ARGUMENTS_NUMBER_PAGES);
-        mKindDataBase = KindDataBase.fromValue(getArguments().getInt(ARGUMENTS_KIND_ENUM_PAGES));
-        detailsViewModel = getArguments().getParcelable(ARGUMENTS_VIEW_MODEL);
+        photoList = getArguments().getStringArrayList(ARGUMENTS_PHOTO_LIST);
+        mViewModel = getArguments().getParcelable(ARGUMENTS_VIEW_MODEL);
+
     }
 
     @Nullable
@@ -67,22 +58,26 @@ public class DetailsPagerFragment extends BaseFragment {
 
         View view = inflater.inflate(R.layout.fragment_details_pager, container, false);
 
-        mDetailsPagerViewModel = new DetailsPagerViewModel(getActivity(), mKindDataBase, position, detailsViewModel);
+        mDetailsPagerViewModel = new DetailsPagerViewModel(getActivity(), photoList);
 
-        mFragmentDetailsPagerBinding  = DataBindingUtil.bind(view);
+        mFragmentDetailsPagerBinding = DataBindingUtil.bind(view);
         mFragmentDetailsPagerBinding.setPager(mDetailsPagerViewModel);
 
-        mFragmentDetailsPagerBinding.detailsPagerRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mFragmentDetailsPagerBinding.errorText.setOnClickListener( v -> mDetailsPagerViewModel.chooseRequestByPositionAndKind(chooseId));
+        mDetailsPagerViewModel.createPhoto(chooseId);
 
-        mDetailsPagerViewModel.chooseRequestByPositionAndKind(chooseId);
+        mCallback = (ViewModelCallback )mViewModel;
+        mCallback.getViewModel(mDetailsPagerViewModel);
 
         return view;
     }
 
+
     @Override
     public void onDestroy() {
-        mDetailsPagerViewModel.unsubscriber();
         super.onDestroy();
+    }
+
+    public interface ViewModelCallback{
+        public void getViewModel(DetailsPagerViewModel viewModel);
     }
 }
